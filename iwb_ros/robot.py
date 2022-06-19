@@ -4,11 +4,32 @@
 
 print('import iwb_ros.robot: start.')
 
+# import multithread method
 from asyncio import FastChildWatcher
+
+# import builtin pkg
 import os
+
+# import ros relevant
 import iwb_ros
 import rosnode
 import rospy
+
+# import the pkg
+
+import iwb_ros.visualization
+import iwb_ros.fake_controller
+import iwb_ros.robot_dynamic
+
+# import multithread solution
+import threading
+import subprocess
+import time
+
+# test, import motionplanning later
+# import iwb_ros.motionplanning
+
+################################## MACRO ################################
 # workspace directory
 ROS_WORKSPACE = '~/sa_ws'
 PYTHON_PKG_DIR = '~/my_pkg'
@@ -31,28 +52,16 @@ USE_SCRIPT = {"fake_controller": False,
 # for those nodes who may not launch from launch file, a register must be done in main thread
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
+
+###############################################################################
+
 # source the ros konfiguration (run the bash script)
 # command = 'bash ' + ros_workspace + '/ros_setup.sh'
 # print(command)
 # print(os.system(command))
 
-# import the pkg
 
-import iwb_ros.visualization
-import iwb_ros.fake_controller
-
-# import multithread solution
-import threading
-import subprocess
-import time
-
-
-
-# test, import motionplanning later
-# import iwb_ros.motionplanning
-
-
-class iwb_robot:
+class IWB_Robot:
     # TODO: Set necessary basic attrs for using existing luanch files or so.
     __ros_workspace = ROS_WORKSPACE
     __python_pkg_dir = PYTHON_PKG_DIR
@@ -63,9 +72,13 @@ class iwb_robot:
     __script_list =SCRIPT_LIST
     __process_handle = PROCESS_HANDLE
     __controller_name = "none"
+    # private attr for kdl
+    __robot_dynamic_info = ""
+
 
     test_value = 1.57
-    
+    def get_robot_dynamic_info(self):
+        return self.__robot_dynamic_info
 
     def get_process_handle(self, process_handle_name):
         return self.__process_handle[process_handle_name]
@@ -106,7 +119,7 @@ class iwb_robot:
             self.script_launch("roscore_launch")
             print("roscore launch: ok.")
         except:
-            print("!!!Fatal: iwb_robot __init__: roscore launch failed.!!!")
+            print("!!!Fatal: IWB_Robot.__init__: roscore launch failed.!!!")
 
         time.sleep(2)
 
@@ -119,6 +132,8 @@ class iwb_robot:
         # os.chdir(cwd)
 
         # time.sleep(2)
+        ###############################################################
+
 
         # alternative: do initialize when call the corresp. function
         ########################################################
@@ -127,7 +142,8 @@ class iwb_robot:
         # for node_name in node_name_list:
         #     rospy.init_node(node_name)
         ########################################################
-        # set the attr of the robot
+
+        # set the python_pkg_dir, which may be in need within rosnode
         rospy.set_param('python_pkg_dir', self.get_python_pkg_dir())
     
     def set_joint_position(self, joint_position):
@@ -138,7 +154,6 @@ class iwb_robot:
         if controller_name == "fake_controller":
             iwb_ros.fake_controller.set_fake_controller(joint_position)
         
-        pass
 
     def fake_controller(self):
         

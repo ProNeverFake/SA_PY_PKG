@@ -7,7 +7,7 @@ print('import iwb_ros.control_fake: start.')
 # the robot arm should be in position immediately (that's why it's fake controller.)
 
 # also import flag
-# TODO: vielleicht soll man hier Attribute in obj iwb_robot lesen.
+# TODO: vielleicht soll man hier Attribute in obj IWB_Robot lesen.
 
 # the python pkg for ros functionalities
 import rospy

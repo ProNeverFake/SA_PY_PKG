@@ -24,9 +24,9 @@ import iwb_ros.test
 
 # instantiation
 print("creat robot object: start")
-# robot = iwb_ros.robot.iwb_robot()
+# robot = iwb_ros.robot.IWB_Robot()
 try:
-    robot = iwb_ros.robot.iwb_robot()
+    robot = iwb_ros.robot.IWB_Robot()
     print("creat robot object: ok")
 except:
     print("!!!Fatal: create obj failed.!!!")
@@ -70,6 +70,11 @@ except:
 # robot.shutdown_all()
 # ##################################################################################
 
+################################# test block ###################################
+
+robot.visualization()
+
+################################################################################
 
 #################################### motion planning code ##########################
 print("launch motion planning: start")
