@@ -58,7 +58,7 @@ except:
 #     joint_position[2] = i
 #     joint_position[17] = i
 #     joint_position[14] = i
-#     robot.set_joint_position(joint_position)
+#     robot.send_joint_position(joint_position)
 #     i = i + n
 
 #     if i > 3.14:
@@ -114,7 +114,7 @@ print(tree.getNrOfSegments())
 #     joint_position[2] = i
 #     joint_position[17] = i
 #     joint_position[14] = i
-#     robot.set_joint_position(joint_position)
+#     robot.send_joint_position(joint_position)
 #     i = i + n
 
 #     if i > 3.14:

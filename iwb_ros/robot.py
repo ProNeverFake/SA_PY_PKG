@@ -14,6 +14,8 @@ import os
 import iwb_ros
 import rosnode
 import rospy
+import roslib
+# roslib.load_manifest("pykdl_utils")
 
 # import the pkg
 
@@ -53,6 +55,7 @@ USE_SCRIPT = {"fake_controller": False,
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
+
 ###############################################################################
 
 # source the ros konfiguration (run the bash script)
@@ -64,21 +67,21 @@ ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
 class IWB_Robot:
     # TODO: Set necessary basic attrs for using existing luanch files or so.
     __ros_workspace = ROS_WORKSPACE
-    __python_pkg_dir = PYTHON_PKG_DIR
+    python_pkg_dir = PYTHON_PKG_DIR
     # flag for launch method
     __use_script = USE_SCRIPT
     __ros_node_name = ROS_NODE_NAME
     __script_dir = SCRIPT_DIR
-    __script_list =SCRIPT_LIST
+    __script_list = SCRIPT_LIST
     __process_handle = PROCESS_HANDLE
     __controller_name = "none"
     # private attr for kdl
-    __robot_dynamic_info = ""
+    UNFINISHED
+    iwb_ros.robot_dynamic.IWB_KDL
 
 
-    test_value = 1.57
-    def get_robot_dynamic_info(self):
-        return self.__robot_dynamic_info
+    # def get_kdl_urdf_model(self):
+    #     return self.__kdl_urdf_model
 
     def get_process_handle(self, process_handle_name):
         return self.__process_handle[process_handle_name]
@@ -89,11 +92,9 @@ class IWB_Robot:
     def get_script_dir(self):
         return self.__script_dir
 
-    def get_script_list(self):
-        return self.__script_list
-
-    def get_python_pkg_dir(self):
-        return self.__python_pkg_dir
+    ############### here is not tested #################################
+    def get_script_name(self, launch_name):
+        return self.__script_list[launch_name]
 
     def get_controller_name(self):
         return self.__controller_name
@@ -144,9 +145,14 @@ class IWB_Robot:
         ########################################################
 
         # set the python_pkg_dir, which may be in need within rosnode
-        rospy.set_param('python_pkg_dir', self.get_python_pkg_dir())
+        rospy.set_param('python_pkg_dir', self.python_pkg_dir)
+
+        # read robot param
+
+        
+
     
-    def set_joint_position(self, joint_position):
+    def send_joint_position(self, joint_position):
         
         controller_name = self.get_controller_name()
 
@@ -207,6 +213,12 @@ class IWB_Robot:
         
         pass
 
+    def start_robot_dynamic(self):
+        # TODO: "the structure of the program is quite a mess in my mind"
+        
+
+        pass
+
 
     def shutdown_all(self):
         # kill all subprocess
@@ -233,7 +245,7 @@ class IWB_Robot:
         # change cd to script dir
         os.chdir(self.get_script_dir())
         # use method to get the corresponding script name
-        script_name = self.get_script_list()[launch_name]
+        script_name = self.get_script_name(launch_name)
         # run in subprocess
         process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())
         self.set_process_handle(process_handle_name, process_handle)
