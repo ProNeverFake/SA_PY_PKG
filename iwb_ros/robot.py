@@ -21,7 +21,7 @@ import roslib
 
 import iwb_ros.visualization
 import iwb_ros.fake_controller
-import iwb_ros.robot_dynamic
+# import iwb_ros.robot_dynamic
 
 # import multithread solution
 import threading
@@ -76,8 +76,8 @@ class IWB_Robot:
     __process_handle = PROCESS_HANDLE
     __controller_name = "none"
     # private attr for kdl
-    UNFINISHED
-    iwb_ros.robot_dynamic.IWB_KDL
+
+    # iwb_ros.robot_dynamic.IWB_KDL
 
 
     # def get_kdl_urdf_model(self):

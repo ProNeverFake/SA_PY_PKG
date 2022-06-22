@@ -71,23 +71,50 @@ except:
 # ##################################################################################
 
 ################################# test block ###################################
-
-robot.visualization()
-
-################################################################################
-
-#################################### motion planning code ##########################
 print("launch motion planning: start")
 # start rviz
-robot.motion_visualization()
+robot.visualization()
 
 from urdf_parser_py.urdf import URDF
 
 
 from pykdl_utils.kdl_parser import kdl_tree_from_urdf_model
+
+# test roslib
+# import roslib
+# roslib.load_manifest("pykdl_utils")
+
+# problematisch import
+
+import pykdl_utils.joint_kinematics
+from pykdl_utils.kdl_kinematics import KDLKinematics
 kdl_robot = URDF.from_parameter_server()
 tree = kdl_tree_from_urdf_model(kdl_robot)
 print(tree.getNrOfSegments())
+base_link = "base_link"
+end_link = "link_6_x"
+chain = tree.getChain(base_link, end_link)
+
+test_kdl_obj = KDLKinematics(kdl_robot, base_link, end_link, tree)
+
+print(chain.getNrOfJoints())
+q = test_kdl_obj.random_joint_angles()
+mass = test_kdl_obj.inertia(q)
+print(mass)
+################################################################################
+
+#################################### motion planning code ##########################
+# print("launch motion planning: start")
+# # start rviz
+# robot.motion_visualization()
+
+# from urdf_parser_py.urdf import URDF
+
+
+# from pykdl_utils.kdl_parser import kdl_tree_from_urdf_model
+# kdl_robot = URDF.from_parameter_server()
+# tree = kdl_tree_from_urdf_model(kdl_robot)
+# print(tree.getNrOfSegments())
 # chain = tree.getChain(base_link, end_link)
 # print(chain.getNrOfJoints())
 

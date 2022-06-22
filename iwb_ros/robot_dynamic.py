@@ -1,3 +1,4 @@
+print("import robot_dynamic: start.")
 # import builtin
 import os
 import math
@@ -7,35 +8,41 @@ import numpy as np
 import PyKDL
 from urdf_parser_py.urdf import URDF
 from pykdl_utils.kdl_parser import kdl_tree_from_urdf_model
+# from pykdl_utils.kdl_kinematics import KDLKinematics
+import pykdl_utils.kdl_kinematics
 
 
 # import ros relevant (if necessary)
 import rospy
+import rosgraph
+
 
 # TODO
 
-class IWB_KDL:
+# inherite the class from kdl_kinematics 
+class IWB_KDL(KDLKinematics):
     # attr in kdl module format: prefix kdl
     __kdl_urdf_model = ""
     __kdl_tree = ""
     __kdl_chain = ""
 
     # about robot
+    base_link = ""
+    end_link = ""
     __joint_position = ""
     jacobian = ""
     __mass_matrix = ""
     # __eigenfreq = ""
-
-    
-
-    def __init__(self):
-        # read urdf model
+ 
+    # use the init method from kdl_kine.
+    # def __init__(self):
+    #     # read urdf model
         
-        # set up kdl tree
+    #     # set up kdl tree
 
-        # set up kdl chain
+    #     # set up kdl chain
 
-        pass
+    #     pass
 
     def set_joint_position(self, joint_position):
         # TODO: check format  
@@ -45,10 +52,9 @@ class IWB_KDL:
         return self.__joint_position
 
     def is_ros_online():
-        # check if rosmaster is online
-        UNFINISHED
-        ros_online = 
-
+        # check if rosmaster is online 
+        # rospy.is_shutdown() # inverse
+        ros_online = rosgraph.is_master_online()
         return ros_online
 
     def robot_dynamic_init(robot):
@@ -91,7 +97,7 @@ class IWB_KDL:
 
 
 
-
+print("import robot_dynamic: ok.")
 
 
 
