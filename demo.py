@@ -96,6 +96,7 @@ end_link = "link_6_x"
 chain = tree.getChain(base_link, end_link)
 
 test_kdl_obj = KDLKinematics(kdl_robot, base_link, end_link)
+print(test_kdl_obj.get_joint_names())
 
 print(chain.getNrOfJoints())
 # q = test_kdl_obj.random_joint_angles()
