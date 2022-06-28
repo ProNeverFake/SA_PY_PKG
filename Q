@@ -1,0 +1,7 @@
+Ich habe eine Frage über Thema Dynamik.
+
+In einem einfachsten Robot mit 2 Körper (worin einer davon fest ist) und 1 Sphere-Gelenk (FHG in Rotation um xyz achsen) kann man durch die Newton-Euler-Gleichungen die Massmatrix M berechnen. Nun wird das Sphere-Gelenk mit 3 Rotationsgelenken ersetzt und zwischeneinander gibt's 2 zusätzliche Körper, die Keinen Mass und Inertia haben (oder sehr sehr klein daher man das vernachlässigen kann). Ich bin der Ansicht, dass dieser Ersatz genauso wie das originale Sphere-Gelenk. Mindestens bei Kinematik sind Beide gleich. 
+
+Aber die Mass-Matrix von der zweiten Struktur unterscheidet sich von der der Erste. In Newton-Euler, die erste struktur hat 1 Körper mit 3 Fhg, während die Zweite 3 Körper und jener mit 1 Fhg hat. Die Dimensionen von Beiden sind dieselben. Aber für die Körper ohne mass (Inertia) in der zweiten Struktur sind die Terme mit "m" und "I" einfach null. Dann ist die Mass Matrix definitiv unterschiedlich von der Andere.
+
+Vielleicht gibt es noch eine Methode, mit der man einen Ersatz erstellen kann, der nicht nur bei Kinematik, sondern auch bei Dynamik genauso wie die alte Struktur? Oder ist meine obige Meinung falsch?

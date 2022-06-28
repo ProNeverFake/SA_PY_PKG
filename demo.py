@@ -95,12 +95,23 @@ base_link = "base_link"
 end_link = "link_6_x"
 chain = tree.getChain(base_link, end_link)
 
-test_kdl_obj = KDLKinematics(kdl_robot, base_link, end_link, tree)
+test_kdl_obj = KDLKinematics(kdl_robot, base_link, end_link)
 
 print(chain.getNrOfJoints())
-q = test_kdl_obj.random_joint_angles()
+# q = test_kdl_obj.random_joint_angles()
+q = [0]*18
+jcb = test_kdl_obj.jacobian(q)
 mass = test_kdl_obj.inertia(q)
+mass_cart = test_kdl_obj.cart_inertia(q)
+import numpy as np
+
+with open('outfile.txt', 'wb') as f:
+    for line in mass:
+        np.savetxt(f, line, fmt='%.2f')
+
 print(mass)
+print("J")
+print(jcb)
 ################################################################################
 
 #################################### motion planning code ##########################
