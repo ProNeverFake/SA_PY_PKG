@@ -8,6 +8,7 @@ import os
 # os.system(". /opt/ros/noetic/local_setup.bash")
 
 import sys
+print(__path__)
 # TODO: need to set the pypath to enable find_pkg
 sys.path.append("/usr/lib/python3/dist-packages")
 sys.path.append("/opt/ros/noetic/lib/python3/dist-packages")
