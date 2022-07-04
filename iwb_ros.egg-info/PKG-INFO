@@ -1,0 +1,14 @@
+Metadata-Version: 1.2
+Name: iwb-ros
+Version: 0.0.0
+Summary: IWB python package for milling machine simulation
+Home-page: UNKNOWN
+Author: Blackbird
+Author-email: jicong.ao@tum.de
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Python 3.10
+Classifier: Gitlab Project
+Classifier: Ubuntu
+Requires-Python: >=3.5
