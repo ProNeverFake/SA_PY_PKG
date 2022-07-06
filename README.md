@@ -41,13 +41,6 @@ You can  **run script "demo.py" independently**, which already applied some func
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-```console
-sudo python setup.py install
-
-
-bash ~/my_pkg/system_permission.sh 
-```
-
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
