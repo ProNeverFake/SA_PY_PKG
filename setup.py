@@ -9,8 +9,8 @@ setup(
     author_email="jicong.ao@tum.de",
     description="IWB python package for milling machine simulation",
     license="MIT",
-    package_dir= {"":"iwb_ros"},
-    packages=[""],
+    packages=['iwb_ros'],
+    package_data={'iwb_ros': ['script/*.sh']},
     classifiers=["Python 3.10", "Gitlab Project", "Ubuntu"],
 
 )

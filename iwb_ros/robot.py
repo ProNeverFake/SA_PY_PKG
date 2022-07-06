@@ -4,11 +4,13 @@
 
 print('import iwb_ros.robot: start.')
 
+# run setting
+import iwb_ros.setting
 # import multithread method
-from asyncio import FastChildWatcher
 
 # import builtin pkg
 import os
+import stat
 
 # import ros relevant
 import iwb_ros
@@ -18,7 +20,6 @@ import roslib
 # roslib.load_manifest("pykdl_utils")
 
 # import the pkg
-
 import iwb_ros.visualization
 import iwb_ros.fake_controller
 # import iwb_ros.robot_dynamic
@@ -31,12 +32,13 @@ import time
 # test, import motionplanning later
 # import iwb_ros.motionplanning
 
+
 ################################## MACRO ################################
 # workspace directory
 ROS_WORKSPACE = '~/sa_ws'
 PYTHON_PKG_DIR = '~/my_pkg'
-SCRIPT_DIR = os.path.dirname(iwb_ros.__file__) + '/script'
-
+SCRIPT_DIR = iwb_ros.__path__[0] + '/script'
+print("SCRIPT_DIR = ", SCRIPT_DIR)
 SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "visualization": './robot_visualization_launch.sh',
                 "fake_controller":'./fake_controller.sh',
@@ -55,14 +57,17 @@ USE_SCRIPT = {"fake_controller": False,
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
+# make all the scripts executable (manually chmod + x)
+script_to_execute = os.listdir(SCRIPT_DIR)
+print("scripts' name: ", script_to_execute)
+for script in script_to_execute:
+    script_path = SCRIPT_DIR + '/' + script
+    subprocess.Popen(['chmod', '+x', script_path])
+    # st = os.stat(script_path)
+    # os.chmod(script_path, st.st_mode | stat.S_IEXEC | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
 
 ###############################################################################
-
-# source the ros konfiguration (run the bash script)
-# command = 'bash ' + ros_workspace + '/ros_setup.sh'
-# print(command)
-# print(os.system(command))
-
 
 class IWB_Robot:
     # TODO: Set necessary basic attrs for using existing luanch files or so.
@@ -78,7 +83,6 @@ class IWB_Robot:
     # private attr for kdl
 
     # iwb_ros.robot_dynamic.IWB_KDL
-
 
     # def get_kdl_urdf_model(self):
     #     return self.__kdl_urdf_model
@@ -115,6 +119,8 @@ class IWB_Robot:
         # kill possible old roscore
         self.script_launch("ros_shutdown")
         time.sleep(2)
+        # # test
+        # self.script_launch("roscore_launch")
         # start the roscore
         try:
             self.script_launch("roscore_launch")
@@ -149,9 +155,6 @@ class IWB_Robot:
 
         # read robot param
 
-        
-
-    
     def send_joint_position(self, joint_position):
         
         controller_name = self.get_controller_name()
@@ -183,7 +186,6 @@ class IWB_Robot:
             thread.setDaemon(True)
             thread.start()
         
-
     def simulator(self):
         # FUTURE: use simulator.
         pass
@@ -198,7 +200,6 @@ class IWB_Robot:
         rospy.sleep(5)
         # iwb_ros.visualization.visualize(self)
 
-    
     def motion_visualization(self):
         # start moveit configuration and visualization in rviz
         self.script_launch("motion_visualization")
@@ -215,10 +216,7 @@ class IWB_Robot:
 
     def start_robot_dynamic(self):
         # TODO: "the structure of the program is quite a mess in my mind"
-        
-
         pass
-
 
     def shutdown_all(self):
         # kill all subprocess
@@ -236,17 +234,17 @@ class IWB_Robot:
         except:
             print("!!!Fatal: shutdown roscore: Failed.!!!")
 
-
     def script_launch(self, launch_name):
         # launch name key name is the same as process handle key name
         process_handle_name = launch_name
         # get current cd
         cwd = os.getcwd()
         # change cd to script dir
-        os.chdir(self.get_script_dir())
+        # os.chdir(self.get_script_dir())
         # use method to get the corresponding script name
         script_name = self.get_script_name(launch_name)
         # run in subprocess
+        # process_handle = subprocess.call([script_name], cwd = self.get_script_dir())
         process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())
         self.set_process_handle(process_handle_name, process_handle)
 
@@ -255,8 +253,6 @@ class IWB_Robot:
         # TODO: alternative check if launch is finished
         # return the process id for further monitoring
     
-
-
 print('import iwb_ros.robot: ok.')
 
 

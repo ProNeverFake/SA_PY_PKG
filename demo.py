@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
+# import system module
 # import sys
-import sys
-import os
+# import os
 # sys.path.append("~/my_pkg")
-import subprocess
+# import subprocess
 import iwb_ros.robot
 import iwb_ros.test
 
