@@ -58,11 +58,11 @@ ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
 # make all the scripts executable (manually chmod + x)
-script_to_execute = os.listdir(SCRIPT_DIR)
-print("scripts' name: ", script_to_execute)
-for script in script_to_execute:
-    script_path = SCRIPT_DIR + '/' + script
-    subprocess.Popen(['chmod', '+x', script_path])
+# script_to_execute = os.listdir(SCRIPT_DIR)
+# print("scripts' name: ", script_to_execute)
+# for script in script_to_execute:
+#     script_path = SCRIPT_DIR + '/' + script
+#     subprocess.Popen(['chmod', '+x', script_path])
     # st = os.stat(script_path)
     # os.chmod(script_path, st.st_mode | stat.S_IEXEC | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
