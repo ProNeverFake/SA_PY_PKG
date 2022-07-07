@@ -18,13 +18,13 @@ do
 done
 
 
-local_script=$HOME/my_pkg/iwb_ros/script
+#local_script=$HOME/my_pkg/iwb_ros/script
 
-for entry in "$local_script"/*
-do
-  echo "$entry"
-  sudo chmod +rwx $entry
-done
+#for entry in "$local_script"/*
+#do
+#  echo "$entry"
+#  sudo chmod +rwx $entry
+#done
 
 # don not use sudo to run this script!!!
 echo $HOME
