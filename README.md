@@ -84,16 +84,16 @@ The packages are based on ROS Noetic distribution. You may install the **desktop
 ~~Every time you want to run the packages with terminal, use the following command to **setup the ROS environment**.~~
 
 
-```console
-$ source /opt/ros/noetic/setup.bash
+```shell
+source /opt/ros/noetic/setup.bash
 ```
 
 ~~if you want to source a different version of ROS, this line would be:~~
 
-```console
-$ source /opt/ros/ROS-DISTRO/setup.bash
+```shell
+source /opt/ros/ROS-DISTRO/setup.bash
 # for example ROS 2 foxy:
-$ source /opt/ros/foxy/setup.bash
+source /opt/ros/foxy/setup.bash
 ```
 
 ~~You may have noticed that it's possible to avoid doing this every time opening a terminal by **adding this line into your system "~/.bashrc"**. If you do so, please check if you append the line for **the ROS version that of your use**. (Remember this when transplant the project to a new ROS version, for example ROS 2 foxy)~~
@@ -110,19 +110,19 @@ The path & motion planning parts of the packages are realized by **Moveit**, whi
 
 You can **install moveit ROS (binary) packages** by execute the following line in your terminal:
 
-```console
+```shell
 # here for ros noetic
-$ sudo apt install ros-noetic-moveit 
+sudo apt install ros-noetic-moveit 
 ```
 
 _**tips:** You could always install missing ros packages using command line like:_
 
 
-```console
-$ sudo apt update
-$ sudo apt install ros-ROS_DISTRO-ros_package_name
+```shell
+sudo apt update
+sudo apt install ros-ROS_DISTRO-ros_package_name
 # for example
-$ sudo apt install ros-noetic-ros-control
+sudo apt install ros-noetic-ros-control
 ```
 The [**Moveit Tutorial**](https://ros-planning.github.io/moveit_tutorials/) can help you to understand its planning functionalities. The **Python interfaces** of Moveit are explained [Here](https://ros-planning.github.io/moveit_tutorials/doc/move_group_python_interface/move_group_python_interface_tutorial.html), which is quite helpful. And the process to **set up a robot configuration for Moveit** is shown [Here](https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html).
 
@@ -136,19 +136,19 @@ Ubuntu 20.04 and other versions of Debian Linux ship with Python 3 pre-installed
 
 optional: install pip for further package installing.
 
-```console
-$ sudo apt update
-$ sudo apt -y upgrade
-$ sudo apt install -y python3-pip
+```shell
+sudo apt update
+sudo apt -y upgrade
+sudo apt install -y python3-pip
 ```
 
 ###### Install Pykdl
 
 Note that Pykdl should be installed with the installation of ROS. You can also install it using:
 
-```console
-$ sudo apt update
-$ sudo apt install python3-pykdl
+```shell
+sudo apt update
+sudo apt install python3-pykdl
 ```
 
 ###### Install hrl-kdl
@@ -158,46 +158,47 @@ For some reasons, it would be better to setup it from its repository clone. The 
 
 open a terminal and run:
 
-```console
-$ cd
-$ mkdir -p catkin_ws/src
-$ cd ~/catkin_ws/src/
+```shell
+cd
+mkdir -p catkin_ws/src
+cd ~/catkin_ws/src/
 # clone the project repositroy (requires git tool)
-$ git clone https://github.com/amir-yazdani/hrl-kdl.git
+git clone https://github.com/amir-yazdani/hrl-kdl.git
 ```
 Checkout to the noetic-devel branch
-```console
-$ cd hrl-kdl
-$ git checkout noetic-devel
+```sh
+cd hrl-kdl
+git checkout noetic-devel
 ```
 
 **Install pykd_utils**
-```console
-$ cd pykdl_utils
-$ python3 setup.py build (maybe need sudo)
-$ sudo python3 setup.py install
+```sh
+cd pykdl_utils
+# python3 setup.py build (maybe need sudo)
+sudo python3 setup.py install
 ```
 
 Install hrl_geom
-```console
-$ cd ~/catkin_ws/src/hrl-kdl/hrl_geom/
-$ python3 setup.py build
-$ sudo python3 setup.py install
+```bash
+cd ~/catkin_ws/src/hrl-kdl/hrl_geom/
+python3 setup.py build
+sudo python3 setup.py install
 ```
 
 install urdf_parser and urdfdom-py
+
 ```bash
-$ sudo apt-get install ros-noetic-urdf-parser-plugin
-$ sudo apt-get install ros-noetic-urdfdom-py
+sudo apt-get install ros-noetic-urdf-parser-plugin
+sudo apt-get install ros-noetic-urdfdom-py
 ```
 
 Build the catkin workspace
 ```bash
-$ cd ~/catkin_ws
+cd ~/catkin_ws
 # install catkin build tool package
-$ sudo apt-get install python3-catkin-tools
-
-$ catkin build
+sudo apt-get install python3-catkin-tools
+# then build catkin
+catkin build
 ```
 
 Now the hrl-kdl has been succeessfully installed. 
@@ -213,33 +214,33 @@ After fulfilling the prerequisites, you can now install the package to your devi
 
 Open a terminal (ctrl+alt+T) and run the lines below to **make new directory** for the project.
 
-```console
-$ cd
-$ mkdir -p my_pkg
-$ cd my_pkg
+```shell
+cd
+mkdir -p my_pkg
+cd my_pkg
 ```
 Then run git command to **clone the packages into your new directory** (You may need permission for that, e.g. ask the owner to add you as a maintainer.):
 
-```console
+```sh
 # Do not ignore the point "." at last!
-$ git clone https://gitlab.lrz.de/00000000014A6C01/sa_py_pkg.git .
+git clone https://gitlab.lrz.de/00000000014A6C01/sa_py_pkg.git .
 ```
 Now check the packages you cloned. You can **install the package** using:
 
-```console
+```sh
 # You need sudo for that
-$ sudo python3 setup.py install
+sudo python3 setup.py install
 ```
 
 It is recommended to **check the installation path of your python package (library directory)**. You can check it with python terminal interaction. Open a **new** terminal and run (must ensure the work directory is not the one you placed our repository, otherwise the package in the repository may be imported instead of the one you installed):
 
-```console
-$ python3
+```sh
+python3
 ```
 
 to start Python3 terminal interaction, then run the following in that:
 
-```python
+```sh
 # Now you should be able to import our package
 import iwb_ros.setting
 iwb_ros.setting.bash_strout("package_path")
@@ -255,10 +256,10 @@ which means your installation succeeds so far. You can **use ctrl+d** to quit th
 
 Since our package needs to **run bash script to use the launch file of ROS package**, you need to **change those scripts as executable**. In terminal the command for that should be "chmod +x FILENAME", but here you can run a script to achieve it. Open a new terminal and run:
 
-```console
-$ cd my_pkg
+```sh
+cd my_pkg
 # you need password for sudo
-$ bash system_permission.sh 
+bash system_permission.sh 
 ```
 
 Run it without error, then the package is ready for using.
@@ -269,9 +270,9 @@ You can run demo.py for checking. Note that you need to **move it into a new dir
 
 You can either use python terminal command to run it, like:
 
-```console
-$ cd path/to/it
-$ python3 demo.py
+```sh
+cd path/to/it
+python3 demo.py
 ```
 
 Or you can also run it with IDE like vscode for bebug.
