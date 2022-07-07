@@ -186,14 +186,17 @@ $ sudo python3 setup.py install
 ```
 
 install urdf_parser and urdfdom-py
-```console
+```bash
 $ sudo apt-get install ros-noetic-urdf-parser-plugin
 $ sudo apt-get install ros-noetic-urdfdom-py
 ```
 
 Build the catkin workspace
-```console
+```bash
 $ cd ~/catkin_ws
+# install catkin build tool package
+$ sudo apt-get install python3-catkin-tools
+
 $ catkin build
 ```
 
@@ -278,6 +281,11 @@ Or you can also run it with IDE like vscode for bebug.
 TODO
 
 ## 🚀 Development <a name = "development"></a>
+
+The tree sturcture of the package is shown as follow:
+
+TODO: tree structure
+
 
 TODO API 
 
