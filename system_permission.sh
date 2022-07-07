@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd
 # Here is your scripts' installation path
 search_dir=/user/local/lib/python3.8
 
