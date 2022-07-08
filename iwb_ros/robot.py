@@ -22,7 +22,7 @@ import roslib
 # import the pkg
 import iwb_ros.visualization
 import iwb_ros.fake_controller
-# import iwb_ros.robot_dynamic
+import iwb_ros.robot_dynamic
 
 # import multithread solution
 import threading
