@@ -254,13 +254,16 @@ The output should be similar like:
 ```
 which means your installation succeeds so far. You can **use ctrl+d** to quit the interaction programming of python3.
 
-Since our package needs to **run bash script to use the launch file of ROS package**, you need to **change those scripts as executable**. In terminal the command for that should be "chmod +x FILENAME", but here you can run a script to achieve it. Open a new terminal and run:
+Since our package needs to **run bash script to make use of the launch file of ROS packages**, you need to **change those scripts as executable**. In terminal the command for that should be "chmod +x FILENAME", but here you can run a script to achieve it. Open a new terminal and run:
 
 ```sh
 cd my_pkg
-# you need password for sudo
-bash system_permission.sh 
+# use sudo to prevent taking current directory as python workspace
+sudo bash system_permission.sh
 ```
+
+Check the outputs of the terminal, which should always start with "/usr/local/lib/python3.8/dist-packages/iwb_ros/script/...". If they start with your current directory, open a new terminal and try to run bash command with absolute path using sudo.
+
 
 Run it without error, then the package is ready for using.
 
