@@ -71,22 +71,48 @@ except:
 # ##################################################################################
 
 ################################# test block ###################################
-print("launch visualization: start")
+print("launch motion planning: start")
 # start rviz
 robot.visualization()
-# start fake controller
-robot.fake_controller()
-# start iwb_kdl
-robot.iwb_kdl_start()
 
-while True:
-    (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
-    print(joint_states)
-    print(jacobian)
-    print("##########################################")
-    # print(mass)
+from urdf_parser_py.urdf import URDF
 
 
+from pykdl_utils.kdl_parser import kdl_tree_from_urdf_model
+
+# test roslib
+# import roslib
+# roslib.load_manifest("pykdl_utils")
+
+# problematisch import
+
+import pykdl_utils.joint_kinematics
+from pykdl_utils.kdl_kinematics import KDLKinematics
+kdl_robot = URDF.from_parameter_server()
+tree = kdl_tree_from_urdf_model(kdl_robot)
+print(tree.getNrOfSegments())
+base_link = "base_link"
+end_link = "link_6_x"
+chain = tree.getChain(base_link, end_link)
+
+test_kdl_obj = KDLKinematics(kdl_robot, base_link, end_link)
+print(test_kdl_obj.get_joint_names())
+
+print(chain.getNrOfJoints())
+# q = test_kdl_obj.random_joint_angles()
+q = [0]*18
+jcb = test_kdl_obj.jacobian(q)
+mass = test_kdl_obj.inertia(q)
+mass_cart = test_kdl_obj.cart_inertia(q)
+import numpy as np
+
+with open('outfile.txt', 'wb') as f:
+    for line in mass:
+        np.savetxt(f, line, fmt='%.2f')
+
+print(mass)
+print("J")
+print(jcb)
 ################################################################################
 
 #################################### motion planning code ##########################

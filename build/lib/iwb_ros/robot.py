@@ -5,6 +5,7 @@
 print('import iwb_ros.robot: start.')
 
 # run setting
+from re import A
 import iwb_ros.setting
 # import multithread method
 
@@ -22,7 +23,7 @@ import roslib
 # import the pkg
 import iwb_ros.visualization
 import iwb_ros.fake_controller
-# import iwb_ros.robot_dynamic
+import iwb_ros.robot_dynamic
 
 # import multithread solution
 import threading
@@ -58,11 +59,11 @@ ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
 # make all the scripts executable (manually chmod + x)
-script_to_execute = os.listdir(SCRIPT_DIR)
-print("scripts' name: ", script_to_execute)
-for script in script_to_execute:
-    script_path = SCRIPT_DIR + '/' + script
-    subprocess.Popen(['chmod', '+x', script_path])
+# script_to_execute = os.listdir(SCRIPT_DIR)
+# print("scripts' name: ", script_to_execute)
+# for script in script_to_execute:
+#     script_path = SCRIPT_DIR + '/' + script
+#     subprocess.Popen(['chmod', '+x', script_path])
     # st = os.stat(script_path)
     # os.chmod(script_path, st.st_mode | stat.S_IEXEC | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
@@ -245,7 +246,7 @@ class IWB_Robot:
         script_name = self.get_script_name(launch_name)
         # run in subprocess
         # process_handle = subprocess.call([script_name], cwd = self.get_script_dir())
-        process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())
+        process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())  
         self.set_process_handle(process_handle_name, process_handle)
 
         os.chdir(cwd)

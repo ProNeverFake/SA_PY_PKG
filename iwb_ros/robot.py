@@ -5,6 +5,8 @@
 print('import iwb_ros.robot: start.')
 
 # run setting
+from re import A
+from tkinter import EXCEPTION
 import iwb_ros.setting
 # import multithread method
 
@@ -20,6 +22,7 @@ import roslib
 # roslib.load_manifest("pykdl_utils")
 
 # import the pkg
+import iwb_ros.robot_base
 import iwb_ros.visualization
 import iwb_ros.fake_controller
 import iwb_ros.robot_dynamic
@@ -57,6 +60,13 @@ USE_SCRIPT = {"fake_controller": False,
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
+# FAKE_CONTROLLER_USE_EXAMPLE = True
+
+BASE_LINK = "base_link"
+END_LINK = "link_6_x"
+# if IWB_KDL wait until called to read joint state from ros
+KDL_WAIT = False
+
 # make all the scripts executable (manually chmod + x)
 # script_to_execute = os.listdir(SCRIPT_DIR)
 # print("scripts' name: ", script_to_execute)
@@ -80,9 +90,14 @@ class IWB_Robot:
     __script_list = SCRIPT_LIST
     __process_handle = PROCESS_HANDLE
     __controller_name = "none"
-    # private attr for kdl
 
-    # iwb_ros.robot_dynamic.IWB_KDL
+    base_link = BASE_LINK
+    end_link = END_LINK
+    kdl_wait = KDL_WAIT
+
+    # fake_controller_use_example = FAKE_CONTROLLER_USE_EXAMPLE
+    # KDL obj
+    iwb_kdl = ""
 
     # def get_kdl_urdf_model(self):
     #     return self.__kdl_urdf_model
@@ -141,7 +156,6 @@ class IWB_Robot:
         # time.sleep(2)
         ###############################################################
 
-
         # alternative: do initialize when call the corresp. function
         ########################################################
         # # register the node in main thread
@@ -155,7 +169,7 @@ class IWB_Robot:
 
         # read robot param
 
-    def send_joint_position(self, joint_position):
+    def robot_send_joint_position(self, joint_position):
         
         controller_name = self.get_controller_name()
 
@@ -163,9 +177,7 @@ class IWB_Robot:
         if controller_name == "fake_controller":
             iwb_ros.fake_controller.set_fake_controller(joint_position)
         
-
-    def fake_controller(self):
-        
+    def fake_controller(self, use_example = False):
         # change the name of controller
         self.set_controller_name("fake_controller")
         use_script = self.get_use_script("fake_controller")
@@ -185,7 +197,22 @@ class IWB_Robot:
             thread = threading.Thread(target=iwb_ros.fake_controller.start_fake_controller)
             thread.setDaemon(True)
             thread.start()
-        
+        # run a example if asked
+        if use_example:
+            iwb_ros.fake_controller.run_test_example()
+
+    def iwb_kdl_start(self):
+        self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link, self.kdl_wait)
+
+    # get all the current dynamic attribute of the robot in a tuple
+    # in order of joint states, jacobian, mass matrix, cartesian mass matrix
+    def iwb_kdl_get_dynamics_all(self):
+        try:
+            result = self.iwb_kdl.get_dynamics_all()
+            return result
+        except EXCEPTION as e:
+            iwb_ros.robot_base.exception_track(e) 
+
     def simulator(self):
         # FUTURE: use simulator.
         pass
@@ -214,10 +241,6 @@ class IWB_Robot:
         
         pass
 
-    def start_robot_dynamic(self):
-        # TODO: "the structure of the program is quite a mess in my mind"
-        pass
-
     def shutdown_all(self):
         # kill all subprocess
         # TODO
@@ -234,6 +257,7 @@ class IWB_Robot:
         except:
             print("!!!Fatal: shutdown roscore: Failed.!!!")
 
+    # run a provided script
     def script_launch(self, launch_name):
         # launch name key name is the same as process handle key name
         process_handle_name = launch_name
@@ -245,7 +269,7 @@ class IWB_Robot:
         script_name = self.get_script_name(launch_name)
         # run in subprocess
         # process_handle = subprocess.call([script_name], cwd = self.get_script_dir())
-        process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())
+        process_handle = subprocess.Popen(script_name,shell=True, cwd=self.get_script_dir())  
         self.set_process_handle(process_handle_name, process_handle)
 
         os.chdir(cwd)

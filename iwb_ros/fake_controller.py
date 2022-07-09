@@ -78,6 +78,31 @@ def set_fake_controller(joint_position):
     else:
         print("!!Error: set ros param failed: fake controller is not online.!!")
 
+# run a simple example for test, but will block the main process
+def run_test_example():
+    joint_position = [0]*18
+    i = 0
+    n = 0.01
+    t = 0
+
+    while True:
+
+        t = t + 1
+        # print(joint_position)
+        joint_position[0] = i
+        joint_position[1] = i
+        joint_position[2] = i
+        joint_position[17] = i
+        joint_position[14] = i
+        set_fake_controller(joint_position)
+        i = i + n
+
+        if i > 3.14:
+            i = -3.14
+        
+        if t >= 2000:
+            break
+
     
 def kill_fake_controller():
     # delete the parameters

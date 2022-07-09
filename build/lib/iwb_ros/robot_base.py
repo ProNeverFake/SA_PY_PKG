@@ -56,10 +56,7 @@ def exception_track(e):
     #           (type(exc_value), ('not', '')[exc_value is e]))
     # print('traceback.print_exc(): ', traceback.print_exc())
     print('Exception Traceback:\n%s' % traceback.format_exc())
-    if not hasattr(e, "suggestion"):
-        pass
-    else:
-        print(e.suggestion)
+    print(e.suggestion)
     # print('Exception Traceback:\n%s' % traceback.print_tb(exc_traceback))
     print('########################################################')
     print(Fore.RESET)
