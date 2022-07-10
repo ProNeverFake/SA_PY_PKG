@@ -220,7 +220,8 @@ class IWB_Robot:
             result = self.iwb_kdl.get_dynamics_all()
             return result
         except Exception as e:
-            iwb_ros.robot_base.exception_track(e) 
+            iwb_ros.robot_base.exception_track(e)
+            self.iwb_kdl.shutdown()
 
     def simulator(self):
         # FUTURE: use simulator.

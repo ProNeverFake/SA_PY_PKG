@@ -61,7 +61,7 @@ def create_IWB_KDL(base_link, end_link, urdf_filename=None, timeout=2., wait=Tru
 # jcb = test_kdl_obj.jacobian(q)
 # mass = test_kdl_obj.inertia(q)
 #######################################
-class IWB_KDL(kdl_jk.JointKinematicsWait, kdl_jk.JointKinematics):
+class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
 
     wait = ""
     # URDF file path
@@ -142,10 +142,10 @@ class IWB_KDL(kdl_jk.JointKinematicsWait, kdl_jk.JointKinematics):
     # decide which method to use
     def get_joint_position(self):
         if self.wait:
-            self.get_joint_state()
+            return self.get_joint_state()
         else:
             # self.wait_for_joint_angles()
-            self.get_joint_angles()
+            return self.get_joint_angles()
 
     def get_jacobian(self):
         # get current joint states
@@ -167,6 +167,7 @@ class IWB_KDL(kdl_jk.JointKinematicsWait, kdl_jk.JointKinematics):
 
     # 3 in 1
     def get_dynamics_all(self):
+
         robot_joint_state = self.get_joint_position()
         jacobian = self.jacobian(robot_joint_state)
         mass = self.inertia(robot_joint_state)
@@ -174,6 +175,9 @@ class IWB_KDL(kdl_jk.JointKinematicsWait, kdl_jk.JointKinematics):
 
         return (robot_joint_state, jacobian, mass, cart_mass)
     
+    def shutdown(self):
+        # how?
+        pass
 
 print("import robot_dynamic: ok.")
 
