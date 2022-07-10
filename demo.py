@@ -76,13 +76,15 @@ print("launch visualization: start")
 robot.visualization()
 # start fake controller
 robot.fake_controller()
+# start robot motion example
+robot.iwb_state_publisher_start()
 # start iwb_kdl
 robot.iwb_kdl_start()
 
 while True:
     (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
     print(joint_states)
-    print(jacobian)
+    print(cart_mass)
     print("##########################################")
     # print(mass)
 

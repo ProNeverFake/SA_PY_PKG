@@ -37,6 +37,7 @@
 
 
 
+from attr import has
 from colorama import Fore
 import sys
 import traceback
@@ -46,6 +47,9 @@ def exception_track(e):
     print(Fore.RED)
     print('##################### Exception #########################')
     print('Name:\t\t', repr(e))
+
+    if hasattr(e, "operation"):
+        print('Operation:\t', e.operation)    
     print('Description:\t', str(e))
     # print('Location:\t', e.location)    
     # Get information about the exception that is currently being handled  
@@ -56,7 +60,10 @@ def exception_track(e):
     #           (type(exc_value), ('not', '')[exc_value is e]))
     # print('traceback.print_exc(): ', traceback.print_exc())
     print('Exception Traceback:\n%s' % traceback.format_exc())
-    print(e.suggestion)
+    if not hasattr(e, "suggestion"):
+        pass
+    else:
+        print(e.suggestion)
     # print('Exception Traceback:\n%s' % traceback.print_tb(exc_traceback))
     print('########################################################')
     print(Fore.RESET)
@@ -94,6 +101,25 @@ class RobotNotFound(Error):
         self.description = "IWB_Robot object was not found"
         self.module_name = module_name
         self.suggestion = "IWB_Robot object was not found. Please create a object first!"
+        # self.message = "in module " + module_name
+        # self.location = "iwb_ros."+ module_name + "." + function_name
+    def __str__(self):
+        return self.description
+
+class NodeNotOnline(Error):
+    # Exception raised when call ROS with Ros master offline
+    description = ""
+    # message = ""
+    operation = ""
+    location = ""
+    suggestion = ""
+    nodename = ""
+
+    def __init__(self, module_name, operation, nodename = None):
+        self.description = "Cannot kill a node"
+        self.operation = operation
+        self.nodename = nodename
+        self.suggestion = "Cannot kill node: " + nodename +", maybe it's not alive."
         # self.message = "in module " + module_name
         # self.location = "iwb_ros."+ module_name + "." + function_name
     def __str__(self):

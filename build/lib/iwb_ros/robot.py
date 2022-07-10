@@ -6,6 +6,7 @@ print('import iwb_ros.robot: start.')
 
 # run setting
 from re import A
+from tkinter import EXCEPTION
 import iwb_ros.setting
 # import multithread method
 
@@ -21,6 +22,7 @@ import roslib
 # roslib.load_manifest("pykdl_utils")
 
 # import the pkg
+import iwb_ros.robot_base
 import iwb_ros.visualization
 import iwb_ros.fake_controller
 import iwb_ros.robot_dynamic
@@ -43,6 +45,7 @@ print("SCRIPT_DIR = ", SCRIPT_DIR)
 SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "visualization": './robot_visualization_launch.sh',
                 "fake_controller":'./fake_controller.sh',
+                "iwb_state_publisher": './iwb_state_publisher.sh',
                 "ros_shutdown": './ros_shutdown.sh',
                 "roscore_launch": './roscore_launch.sh',
                 "motion_visualization": './moveit_script.sh',
@@ -57,6 +60,13 @@ USE_SCRIPT = {"fake_controller": False,
 # for those nodes who may not launch from launch file, a register must be done in main thread
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
+
+# FAKE_CONTROLLER_USE_EXAMPLE = True
+
+BASE_LINK = "base_link"
+END_LINK = "link_6_x"
+# if IWB_KDL wait until called to read joint state from ros
+KDL_WAIT = False
 
 # make all the scripts executable (manually chmod + x)
 # script_to_execute = os.listdir(SCRIPT_DIR)
@@ -81,9 +91,14 @@ class IWB_Robot:
     __script_list = SCRIPT_LIST
     __process_handle = PROCESS_HANDLE
     __controller_name = "none"
-    # private attr for kdl
 
-    # iwb_ros.robot_dynamic.IWB_KDL
+    base_link = BASE_LINK
+    end_link = END_LINK
+    kdl_wait = KDL_WAIT
+
+    # fake_controller_use_example = FAKE_CONTROLLER_USE_EXAMPLE
+    # KDL obj
+    iwb_kdl = ""
 
     # def get_kdl_urdf_model(self):
     #     return self.__kdl_urdf_model
@@ -142,7 +157,6 @@ class IWB_Robot:
         # time.sleep(2)
         ###############################################################
 
-
         # alternative: do initialize when call the corresp. function
         ########################################################
         # # register the node in main thread
@@ -156,7 +170,7 @@ class IWB_Robot:
 
         # read robot param
 
-    def send_joint_position(self, joint_position):
+    def robot_send_joint_position(self, joint_position):
         
         controller_name = self.get_controller_name()
 
@@ -164,9 +178,7 @@ class IWB_Robot:
         if controller_name == "fake_controller":
             iwb_ros.fake_controller.set_fake_controller(joint_position)
         
-
-    def fake_controller(self):
-        
+    def fake_controller(self, use_example = False):
         # change the name of controller
         self.set_controller_name("fake_controller")
         use_script = self.get_use_script("fake_controller")
@@ -186,7 +198,30 @@ class IWB_Robot:
             thread = threading.Thread(target=iwb_ros.fake_controller.start_fake_controller)
             thread.setDaemon(True)
             thread.start()
-        
+        # run a example if asked
+        if use_example:
+            iwb_ros.fake_controller.run_test_example()
+
+    # another fake controller
+    def iwb_state_publisher_start(self):
+        try:
+            self.script_launch("iwb_state_publisher")
+        except Exception as e:
+            iwb_ros.robot_base.exception_track(e)
+
+
+    def iwb_kdl_start(self):
+        self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link, self.kdl_wait)
+
+    # get all the current dynamic attribute of the robot in a tuple
+    # in order of joint states, jacobian, mass matrix, cartesian mass matrix
+    def iwb_kdl_get_dynamics_all(self):
+        try:
+            result = self.iwb_kdl.get_dynamics_all()
+            return result
+        except Exception as e:
+            iwb_ros.robot_base.exception_track(e) 
+
     def simulator(self):
         # FUTURE: use simulator.
         pass
@@ -215,10 +250,6 @@ class IWB_Robot:
         
         pass
 
-    def start_robot_dynamic(self):
-        # TODO: "the structure of the program is quite a mess in my mind"
-        pass
-
     def shutdown_all(self):
         # kill all subprocess
         # TODO
@@ -235,6 +266,7 @@ class IWB_Robot:
         except:
             print("!!!Fatal: shutdown roscore: Failed.!!!")
 
+    # run a provided script
     def script_launch(self, launch_name):
         # launch name key name is the same as process handle key name
         process_handle_name = launch_name
