@@ -45,6 +45,7 @@ print("SCRIPT_DIR = ", SCRIPT_DIR)
 SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "visualization": './robot_visualization_launch.sh',
                 "fake_controller":'./fake_controller.sh',
+                "iwb_state_publisher": './iwb_state_publisher.sh',
                 "ros_shutdown": './ros_shutdown.sh',
                 "roscore_launch": './roscore_launch.sh',
                 "motion_visualization": './moveit_script.sh',
@@ -201,6 +202,14 @@ class IWB_Robot:
         if use_example:
             iwb_ros.fake_controller.run_test_example()
 
+    # another fake controller
+    def iwb_state_publisher_start(self):
+        try:
+            self.script_launch("iwb_state_publisher")
+        except Exception as e:
+            iwb_ros.robot_base.exception_track(e)
+
+
     def iwb_kdl_start(self):
         self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link, self.kdl_wait)
 
@@ -210,7 +219,7 @@ class IWB_Robot:
         try:
             result = self.iwb_kdl.get_dynamics_all()
             return result
-        except EXCEPTION as e:
+        except Exception as e:
             iwb_ros.robot_base.exception_track(e) 
 
     def simulator(self):

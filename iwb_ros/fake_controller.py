@@ -10,6 +10,7 @@ print('import iwb_ros.control_fake: start.')
 # TODO: vielleicht soll man hier Attribute in obj IWB_Robot lesen.
 
 # the python pkg for ros functionalities
+import iwb_ros.robot_base
 import rospy
 import rosnode
 
@@ -76,7 +77,7 @@ def set_fake_controller(joint_position):
         # fake controller is online, then set the rosparam
         rospy.set_param('fake_controller/joint_position', joint_position)
     else:
-        print("!!Error: set ros param failed: fake controller is not online.!!")
+        raise iwb_ros.robot_base.NodeNotOnline("fake_controller", "set_fake_controller", "iwb_fake_controller")
 
 # run a simple example for test, but will block the main process
 def run_test_example():
@@ -116,12 +117,13 @@ def kill_fake_controller():
     # TODO: use a general function to kill nodes?
     node_list = rosnode.get_node_names()
     try: 
+
         if "/iwb_fake_controller" in node_list:
             rosnode.kill_nodes("/iwb_fake_controller")
         else:
-            print("!Warning: control_fake.kill_fake_controller: node ", "/iwb_fake_controller", " is not alive.!")
-    except:
-        print("!!!Fatal: control_fake.kill_fake_controller: error from rosnode: cannot kill the node.!!!")
+            raise iwb_ros.robot_base.NodeNotOnline("fake_controller", "kill_fake_controller", "iwb_fake_controller")
+    except Exception as e:
+        iwb_ros.robot_base.exception_track(e)
 
 # ################################## as reference:#########################
 # def set_joint_state():
