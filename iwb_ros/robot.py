@@ -5,20 +5,20 @@
 print('import iwb_ros.robot: start.')
 
 # run setting
-from re import A
-from tkinter import EXCEPTION
+from signal import signal
 import iwb_ros.setting
 # import multithread method
 
 # import builtin pkg
 import os
-import stat
+import signal
 
 # import ros relevant
 import iwb_ros
 import rosnode
 import rospy
-import roslib
+# old ros import method
+# import roslib
 # roslib.load_manifest("pykdl_utils")
 
 # import the pkg
@@ -51,9 +51,7 @@ SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "motion_visualization": './moveit_script.sh',
                 "motion_planner": './moveit_planner.sh'
                 }
-PROCESS_HANDLE = {"visualization": '',
-                "fake_controller": '',
-                }
+PROCESS_HANDLE = {}
 USE_SCRIPT = {"fake_controller": False,
                 "motion_controller": True,}
 
@@ -82,15 +80,15 @@ KDL_WAIT = False
 
 class IWB_Robot:
     # TODO: Set necessary basic attrs for using existing luanch files or so.
-    __ros_workspace = ROS_WORKSPACE
+    _ros_workspace = ROS_WORKSPACE
     python_pkg_dir = PYTHON_PKG_DIR
     # flag for launch method
-    __use_script = USE_SCRIPT
-    __ros_node_name = ROS_NODE_NAME
-    __script_dir = SCRIPT_DIR
-    __script_list = SCRIPT_LIST
-    __process_handle = PROCESS_HANDLE
-    __controller_name = "none"
+    _use_script = USE_SCRIPT
+    _ros_node_name = ROS_NODE_NAME
+    _script_dir = SCRIPT_DIR
+    _script_list = SCRIPT_LIST
+    _process_handle = PROCESS_HANDLE
+    _controller_name = "none"
 
     base_link = BASE_LINK
     end_link = END_LINK
@@ -101,35 +99,50 @@ class IWB_Robot:
     iwb_kdl = ""
 
     # def get_kdl_urdf_model(self):
-    #     return self.__kdl_urdf_model
+    #     return self._kdl_urdf_model
 
     def get_process_handle(self, process_handle_name):
-        return self.__process_handle[process_handle_name]
+        return self._process_handle[process_handle_name]
 
     def set_process_handle(self, process_handle_name, process_handle):
-        self.__process_handle[process_handle_name] = process_handle
+        self._process_handle[process_handle_name] = process_handle
+    
+    def kill_process_handle(self, process_handle_name = None):
+
+        handle_dict = self._process_handle
+        if len(handle_dict) == 0:
+            # no handle exists
+            print("!Warning: kill_process_handle: no handle exists.!")
+            return None
+        if process_handle_name == None:
+            # then kill all handles
+            if not len(handle_dict) == 0:
+                (handle_name, handle) = handle_dict.popitem()
+                os.killpg(os.getpgid(handle.pid), signal.SIGTERM)
+        else:
+            handle = handle_dict[process_handle_name]
+            os.killpg(os.getpgid(handle.pid), signal.SIGTERM)
 
     def get_script_dir(self):
-        return self.__script_dir
+        return self._script_dir
 
-    ############### here is not tested #################################
     def get_script_name(self, launch_name):
-        return self.__script_list[launch_name]
+        return self._script_list[launch_name]
 
     def get_controller_name(self):
-        return self.__controller_name
+        return self._controller_name
     
     def set_controller_name(self, controller_name):
-        self.__controller_name = controller_name
+        self._controller_name = controller_name
 
     def get_ros_workspace(self):
-        return self.__ros_workspace
+        return self._ros_workspace
 
     def get_use_script(self, launch_name):
-        return self.__use_script[launch_name]
+        return self._use_script[launch_name]
 
     def get_ros_node_name(self):
-        return self.__ros_node_name
+        return self._ros_node_name
 
     def __init__(self):
         # kill possible old roscore
@@ -179,6 +192,14 @@ class IWB_Robot:
             iwb_ros.fake_controller.set_fake_controller(joint_position)
         
     def fake_controller(self, use_example = False):
+        '''
+        start a fake controller
+
+        args:
+            use_example: flag, whether apply the example code (making the 6th link rotate)
+                to the controller. Only allowed to use when run from script, otherwise the
+                main process would be blocked. (to be recode)
+        '''
         # change the name of controller
         self.set_controller_name("fake_controller")
         use_script = self.get_use_script("fake_controller")
@@ -195,6 +216,7 @@ class IWB_Robot:
             rospy.init_node(self.get_ros_node_name()["fake_controller"])
             # TODO: use a general function to launch controller
             
+            # here only call the function handle!!!! no klamma
             thread = threading.Thread(target=iwb_ros.fake_controller.start_fake_controller)
             thread.setDaemon(True)
             thread.start()
@@ -204,6 +226,9 @@ class IWB_Robot:
 
     # another fake controller
     def iwb_state_publisher_start(self):
+        '''
+        a pure ros node to publish joint states.
+        '''
         try:
             self.script_launch("iwb_state_publisher")
         except Exception as e:
@@ -211,11 +236,21 @@ class IWB_Robot:
 
 
     def iwb_kdl_start(self):
+        '''
+        create the iwb_kdl instance as a attr of the main robot class
+        '''
         self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link, self.kdl_wait)
 
     # get all the current dynamic attribute of the robot in a tuple
     # in order of joint states, jacobian, mass matrix, cartesian mass matrix
     def iwb_kdl_get_dynamics_all(self):
+        '''
+        get all the kinematic and dynamic features of the robot.
+
+        return:
+            result: a tuple consists of three elements, jacobian matrix, mass matrix and cartesian mass matrix.
+
+        '''
         try:
             result = self.iwb_kdl.get_dynamics_all()
             return result
@@ -228,6 +263,11 @@ class IWB_Robot:
         pass
     
     def visualization(self):
+        '''
+            Open rviz to visualize the robot. The robot params in urdf file get stored in 
+                ros param "robot_description" in this step.
+        '''
+        # now the visualization module is abandoned
         try:
             self.script_launch("visualization")
             print("launch visualization: ok.")
@@ -248,12 +288,15 @@ class IWB_Robot:
         self.script_launch("motion_planner")
     
     def motion_plan_to(self):
-        
+        # send robot motion order
         pass
 
     def shutdown_all(self):
-        # kill all subprocess
-        # TODO
+        '''
+        kill all subprocess and shutdown roscore/rosmaster
+        should be called in the end by default (TODO)
+        '''
+        self.kill_process_handle()
         # this function is used to shutdown all the nodes
         try:
             rosnode.kill_nodes(rosnode.get_node_names())
@@ -269,6 +312,17 @@ class IWB_Robot:
 
     # run a provided script
     def script_launch(self, launch_name):
+        '''
+        general method to run a corresponding script, which includes the bash commands to
+        source the ros installation and execute corresponding launch file.
+        the handle of the launched process should be saved into dictionary
+
+        args: 
+            launch_name: the name of the functionality to be launched, according to the 
+            dictionary robot.script_list
+
+        '''
+
         # launch name key name is the same as process handle key name
         process_handle_name = launch_name
         # get current cd

@@ -64,6 +64,7 @@ def create_IWB_KDL(base_link, end_link, urdf_filename=None, timeout=2., wait=Tru
 class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
 
     wait = ""
+    read_from_server = ""
     # URDF file path
     urdf_path = ""
     # attr in kdl module format: prefix kdl
@@ -90,14 +91,16 @@ class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
 
     #     pass
 
+    # old init, out of date
     # def __init__(self, urdf_model, base_link, end_link, kdl_tree=None):
     #     super(IWB_KDL, self).__init__(urdf_model, base_link, end_link, kdl_tree)
     #     self.robot_base_link = base_link
     #     self.robot_end_link = end_link
     #     self.robot_joint_name = self.get_joint_names()
 
-    def __init__(self, base_link, end_link, wait, urdf_filename = None):
+    def __init__(self, base_link, end_link, wait, urdf_filename = None, read_from_server = True):
         self.wait = wait
+        self.read_from_server = read_from_server
         # get robot structure from urdf file
         urdf_model = self.parse_urdf(urdf_filename)
         # call parent init. method to build the kdl obj
@@ -109,6 +112,7 @@ class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
                     kdl_jk.JointKinematics.__init__(self, urdf_model, base_link, end_link)
             except Exception as e:
                 iwb_ros.robot_base.exception_track(e)
+        
         
         self.robot_base_link = base_link
         self.robot_end_link = end_link

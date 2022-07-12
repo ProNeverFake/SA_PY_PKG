@@ -72,7 +72,7 @@ class Error(Exception):
     # basic class for exceptions in the package
     pass
 
-class RosOfflineError(Error):
+class RosIsOffline(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
     # message = ""
@@ -106,7 +106,7 @@ class RobotNotFound(Error):
     def __str__(self):
         return self.description
 
-class NodeNotOnline(Error):
+class NodeIsOffline(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
     # message = ""
@@ -119,7 +119,7 @@ class NodeNotOnline(Error):
         self.description = "Cannot kill a node"
         self.operation = operation
         self.nodename = nodename
-        self.suggestion = "Cannot kill node: " + nodename +", maybe it's not alive."
+        self.suggestion = "Cannot kill node: " + nodename +", maybe it's offline."
         # self.message = "in module " + module_name
         # self.location = "iwb_ros."+ module_name + "." + function_name
     def __str__(self):
@@ -146,9 +146,9 @@ class ScriptPermissionDenied(Error):
 
 def main():
     try:
-        raise RosOfflineError("test_module", "test_function")
+        raise RosIsOffline("test_module", "test_function")
 
-    except RosOfflineError as e:
+    except RosIsOffline as e:
         exception_track(e)
 
 if __name__ == "__main__":
