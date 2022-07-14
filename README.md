@@ -225,9 +225,18 @@ Then run git command to **clone the packages into your new directory** (You may 
 # Do not ignore the point "." at last!
 git clone https://gitlab.lrz.de/00000000014A6C01/sa_py_pkg.git .
 ```
-Now check the packages you cloned. You can **install the package** using:
+Now check the packages you cloned. If you have put the iwb_ros_package in another directory (not the "sa_ws" which the tutorial suggests), you need to set your custom directory before installation. Open `/iwb_ros/script/iwb_ros_setting.sh` and change the following content tnto yours.
 
 ```sh
+# change this to your folder
+path= PATH_OF_YOUR_FOLDER
+```
+The directory where you place the iwb_ros packages should be `PATH_OF_YOUR_FOLDER/src`
+
+After this, now you can **install the package** using:
+
+```sh
+# Don't forget to change the directory into my_pkg
 # You need sudo for that
 sudo python3 setup.py install
 ```

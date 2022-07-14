@@ -234,6 +234,8 @@ class IWB_Robot:
         except Exception as e:
             iwb_ros.robot_base.exception_track(e)
 
+        rospy.sleep(2)
+
 
     def iwb_kdl_start(self):
         '''

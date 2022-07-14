@@ -84,7 +84,7 @@ robot.visualization()
 robot.fake_controller()
 # start robot motion example
 # use this if need motion to varify
-# robot.iwb_state_publisher_start()
+#robot.iwb_state_publisher_start()
 # start iwb_kdl
 robot.iwb_kdl_start()
 
