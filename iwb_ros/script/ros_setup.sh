@@ -1,11 +1,11 @@
 #!/bin/bash
+# get env var.
+. iwb_ros_setting.sh
 # source the ros1
 source /opt/ros/noetic/setup.bash
 # source this workspace 
-cd ~/sa_ws
+cd "$path"
 catkin_make
-source ~/sa_ws/devel/setup.bash
+source "$source_path"
 
-# run the launch file
-# roslaunch robot_model view_robot.launch
 
