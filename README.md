@@ -228,8 +228,8 @@ git clone https://gitlab.lrz.de/00000000014A6C01/sa_py_pkg.git .
 Now check the packages you cloned. If you have put the iwb_ros_package in another directory (not the "sa_ws" which the tutorial suggests), you need to set your custom directory before installation. Open `/iwb_ros/script/iwb_ros_setting.sh` and change the following content tnto yours.
 
 ```sh
-# change this to your folder
-path= PATH_OF_YOUR_FOLDER
+# change this to your folder, no space on the left & right side of "="
+path=PATH_OF_YOUR_FOLDER
 ```
 The directory where you place the iwb_ros packages should be `PATH_OF_YOUR_FOLDER/src`
 
