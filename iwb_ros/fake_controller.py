@@ -36,7 +36,7 @@ def initialize_fake_controller():
 
 
 # the function to publish the msg
-def start_fake_controller():
+def start_fake_controller(use_example = False):
     print("info: start the fake controller.")
     # # run initialize function
     initialize_fake_controller()

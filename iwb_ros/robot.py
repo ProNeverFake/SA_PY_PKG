@@ -52,7 +52,7 @@ SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "motion_planner": './moveit_planner.sh'
                 }
 PROCESS_HANDLE = {}
-USE_SCRIPT = {"fake_controller": False,
+USE_SCRIPT = {"fake_controller": True,
                 "motion_controller": True,}
 
 # for those nodes who may not launch from launch file, a register must be done in main thread
@@ -63,8 +63,7 @@ ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
 
 BASE_LINK = "base_link"
 END_LINK = "link_6_x"
-# if IWB_KDL wait until called to read joint state from ros
-KDL_WAIT = False
+
 
 # make all the scripts executable (manually chmod + x)
 # script_to_execute = os.listdir(SCRIPT_DIR)
@@ -92,7 +91,7 @@ class IWB_Robot:
 
     base_link = BASE_LINK
     end_link = END_LINK
-    kdl_wait = KDL_WAIT
+    
 
     # fake_controller_use_example = FAKE_CONTROLLER_USE_EXAMPLE
     # KDL obj
@@ -217,7 +216,7 @@ class IWB_Robot:
             # TODO: use a general function to launch controller
             
             # here only call the function handle!!!! no klamma
-            thread = threading.Thread(target=iwb_ros.fake_controller.start_fake_controller)
+            thread = threading.Thread(target=iwb_ros.fake_controller.start_fake_controller, args=(use_example))
             thread.setDaemon(True)
             thread.start()
         # run a example if asked
@@ -241,7 +240,7 @@ class IWB_Robot:
         '''
         create the iwb_kdl instance as a attr of the main robot class
         '''
-        self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link, self.kdl_wait)
+        self.iwb_kdl = iwb_ros.robot_dynamic.IWB_KDL(self.base_link, self.end_link)
 
     # get all the current dynamic attribute of the robot in a tuple
     # in order of joint states, jacobian, mass matrix, cartesian mass matrix

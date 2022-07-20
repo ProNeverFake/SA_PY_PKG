@@ -2,6 +2,7 @@ print("import robot_dynamic: start.")
 # import builtin
 import os
 import math
+from pickle import TRUE
 import numpy as np
 # import kdl relevant
 
@@ -61,9 +62,8 @@ def create_IWB_KDL(base_link, end_link, urdf_filename=None, timeout=2., wait=Tru
 # jcb = test_kdl_obj.jacobian(q)
 # mass = test_kdl_obj.inertia(q)
 #######################################
-class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
+class IWB_KDL(kdl_jk.JointKinematics):
 
-    wait = ""
     read_from_server = ""
     # URDF file path
     urdf_path = ""
@@ -98,20 +98,19 @@ class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
     #     self.robot_end_link = end_link
     #     self.robot_joint_name = self.get_joint_names()
 
-    def __init__(self, base_link, end_link, wait, urdf_filename = None, read_from_server = True):
-        self.wait = wait
+    def __init__(self, base_link, end_link, urdf_filename = None, read_from_server = True):
+        
         self.read_from_server = read_from_server
         # get robot structure from urdf file
         urdf_model = self.parse_urdf(urdf_filename)
         # call parent init. method to build the kdl obj
-        if wait:
-            kdl_jk.JointKinematicsWait.__init__(self, urdf_model, base_link, end_link)
-        else:
-            try:
-                if self.is_ros_online():
-                    kdl_jk.JointKinematics.__init__(self, urdf_model, base_link, end_link)
-            except Exception as e:
-                iwb_ros.robot_base.exception_track(e)
+        
+        try:
+            if self.is_ros_online():
+                rospy.init_node('pykdl_listener', anonymous=True)
+                kdl_jk.JointKinematics.__init__(self, urdf_model, base_link, end_link)
+        except Exception as e:
+            iwb_ros.robot_base.exception_track(e)
         
         
         self.robot_base_link = base_link
@@ -145,11 +144,12 @@ class IWB_KDL(kdl_jk.JointKinematics, kdl_jk.JointKinematicsWait):
             return ros_online
     # decide which method to use
     def get_joint_position(self):
-        if self.wait:
-            return self.get_joint_state()
-        else:
-            # self.wait_for_joint_angles()
-            return self.get_joint_angles()
+        # if self.wait:
+        #     return self.get_joint_state()
+        # else:
+        #     # self.wait_for_joint_angles()
+        #     return self.get_joint_angles()
+        return self.get_joint_angles()
 
     def get_jacobian(self):
         # get current joint states

@@ -9,6 +9,8 @@ import iwb_ros.robot
 import iwb_ros.test
 
 import sys
+
+import rospy
 sys.path.append("/home/blackbird/iwbrbdl")
 
 # test iwbrbdl
@@ -84,19 +86,36 @@ robot.visualization()
 robot.fake_controller()
 # start robot motion example
 # use this if need motion to varify
-#robot.iwb_state_publisher_start()
+# robot.iwb_state_publisher_start()
 # start iwb_kdl
 robot.iwb_kdl_start()
 
-while True:
-    (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
-    print(joint_states)
-    print(cart_mass)
-    
+joint_position = [0]*18
 
+position_list = []
+
+for i in range(5):
+    position_list.append(joint_position[:]),
+    joint_position[14] = joint_position[14] + 0.3
+    joint_position[11] = joint_position[11] + 0.3
+    joint_position[8] = joint_position[8] + 0.3
+
+for x in position_list:
+    # here set the robot to the place
+    print("the qd is: ",x)
+    robot.robot_send_joint_position(x)
+    rospy.sleep(0.2)
+
+    # here get the current mass matrix
+    (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
+    # print for check
+    print("now at:\t")
+    print(joint_states)
+    print("cart. mass matrix here is:\t")
+    print(cart_mass)
     print("##########################################")
-    # remove break if want to try kdl features
-    # break
+    # pause for 5 secs
+    rospy.sleep(5)
 
 
 
