@@ -107,7 +107,7 @@ class IWB_KDL(kdl_jk.JointKinematics):
         
         try:
             if self.is_ros_online():
-                rospy.init_node('pykdl_listener', anonymous=True)
+                rospy.init_node('pykdl_listener', anonymous=False)
                 kdl_jk.JointKinematics.__init__(self, urdf_model, base_link, end_link)
         except Exception as e:
             iwb_ros.robot_base.exception_track(e)

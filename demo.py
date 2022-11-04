@@ -1,24 +1,37 @@
 #!/usr/bin/env python
 
-# import system module
-# import sys
+'''
+    This is the benchmark program used in the thesis, which performs all functions in the order of workflow.
+    It can be used for function check, and is also a good start point for custumization.
+'''
+
+'''import system module'''
 # import os
+import sys
+import numpy as np
 # sys.path.append("~/my_pkg")
 # import subprocess
+'''for error evaluation'''
+import scipy.linalg as LA
+import math
+'''to import reference value in matlab format'''
+from mat4py import loadmat
+
+
+'''import iwb robot modules'''
 import iwb_ros.robot
 import iwb_ros.test
 
-import sys
 
+'''import ros relevant modules'''
 import rospy
+
+
+'''for possible use of iwbrbdl library'''
 sys.path.append("/home/blackbird/iwbrbdl")
 
-# test iwbrbdl
-# import iwbRobotics
 
-
-
-
+'''test code'''
 # # start roscore
 # print("launch roscore: start")
 # try:
@@ -28,18 +41,17 @@ sys.path.append("/home/blackbird/iwbrbdl")
 #     print("start roscore: error")
 
 
-
-
-# instantiation
+'''robot instantiation'''
 print("creat robot object: start")
-# robot = iwb_ros.robot.IWB_Robot()
+
 try:
     robot = iwb_ros.robot.IWB_Robot()
     print("creat robot object: ok")
-except:
+except Exception as e:
+    iwb_ros.robot_base.exception_track(e)
     print("!!!Fatal: create obj failed.!!!")
 
-
+'''visualization test code， removable'''
 # #################################### visualization code ################################
 # print("launch visualization: start")
 # # start rviz
@@ -57,7 +69,6 @@ except:
 # t = 0
 
 
-
 # while True:
 #     t = t + 1
 #     # print(joint_position)
@@ -71,63 +82,105 @@ except:
 
 #     if i > 3.14:
 #         i = -3.14
-    
+
 #     if t >= 2000:
 #         break
 
 # robot.shutdown_all()
 # ##################################################################################
 
-################################# test block ###################################
-print("launch visualization: start")
-# start rviz
-robot.visualization()
-# start fake controller
-robot.fake_controller()
-# start robot motion example
-# use this if need motion to varify
-# robot.iwb_state_publisher_start()
-# start iwb_kdl
-robot.iwb_kdl_start()
+'''import reference values for result evaluation'''
+# ############################### mat import #######################################
 
-joint_position = [0]*18
+data = loadmat('testdata.mat')
+M = data['M']
+K = data['K']
+C = data['C']
+J = data['J']
+frequenz = data['fr']
 
-position_list = []
-
-for i in range(5):
-    position_list.append(joint_position[:]),
-    joint_position[14] = joint_position[14] + 0.3
-    joint_position[11] = joint_position[11] + 0.3
-    joint_position[8] = joint_position[8] + 0.3
-
-for x in position_list:
-    # here set the robot to the place
-    print("the qd is: ",x)
-    robot.robot_send_joint_position(x)
-    rospy.sleep(0.2)
-
-    # here get the current mass matrix
-    (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
-    # print for check
-    print("now at:\t")
-    print(joint_states)
-    print("cart. mass matrix here is:\t")
-    print(cart_mass)
-    print("##########################################")
-    # pause for 5 secs
-    rospy.sleep(5)
-
-
+# the sequence of rotation terms and translation terms is inverse
+# swap 345 with 012 and use J1 as the jacobian matrix from reference data
+J1 = []
+index = [3,4,5,0,1,2]
+for i in index:    
+    J1.append(J[i])
 
 ################################################################################
 
-#################################### motion planning code ##########################
-# print("launch motion planning: start")
-# # start rviz
+'''main process'''
+################################# test block ###################################
+print("launch visualization: start")
+# start visualization
+robot.visualization()
+# start fake controller for configuration setting
+robot.fake_controller()
+
+# start iwb_kdl
+robot.iwb_kdl_start()
+
+# wait 3s for program gets fully launched
+rospy.sleep(3)
+
+# the configuration for testing
+# joint_position is a 1x18 list
+joint_position = [0]*18
+joint_position[2] = 1.1529
+joint_position[5] = -0.0203
+joint_position[8] = -0.7054
+joint_position[11] = 1.2842
+joint_position[14] = 1.2623
+joint_position[17] = -0.8003
+
+# # the old testing program to organize a configuration sequence 
+# # to check a continuous configuration change
+# for i in range(5):
+#     position_list.append(joint_position[:]),
+#     joint_position[14] = joint_position[14] + 0.3
+#     joint_position[11] = joint_position[11] + 0.3
+#     joint_position[8] = joint_position[8] + 0.3
+
+# for possible need of a configuration sequence
+position_list = []
+position_list.append(joint_position[:]),
+
+
+
+####### main work process
+for x in position_list:
+
+    # set robot configuration
+    print("the qd is: ", x)
+    robot.robot_send_joint_position(x)
+    # wait for the execution of last command
+    rospy.sleep(0.2)
+
+    # get joint states, jacobian matrix, mass matrix and cartisian mass matrix
+    (joint_states, jacobian, mass, cart_mass) = robot.iwb_kdl_get_dynamics_all()
+
+    # print for check
+    print("the joints are now at:\t")
+    print(joint_states)
+    print("##########################################")
+    print("mass matrix at current configuration are:\t")
+    print(mass)
+    print("##########################################")
+    print("jacobian matrix at current configuration are:\t")
+    print(jacobian)
+    print("##########################################")
+
+################################################################################
+
+'''another old code, the only different is that the model file
+ modified by moveit! is applied here instead of the original one, 
+ which may allow further development in path planning.'''
+#################################### test code ##########################
+
+'''use the model modified by moveit!'''
 # robot.motion_visualization()
 
+'''pykdl test block, removable'''
 # from urdf_parser_py.urdf import URDF
-
 
 # from pykdl_utils.kdl_parser import kdl_tree_from_urdf_model
 # kdl_robot = URDF.from_parameter_server()
@@ -135,92 +188,39 @@ for x in position_list:
 # print(tree.getNrOfSegments())
 # chain = tree.getChain(base_link, end_link)
 # print(chain.getNrOfJoints())
+###############################################################
 
+##################### mass comparison #########################
+diff = M-mass
+print("the difference in mass matrix:" , diff)
+print("2-norm error evaluation:", LA.norm(diff))
+###############################################################
 
-# # start fake controller
-# robot.fake_controller()
-# # user self-programmed code with set function
-# # a simple example:
-# import rosnode
-# print(rosnode.get_node_names())
-
-# joint_position = [0]*18
-# i = 0
-# n = 0.01
-# t = 0
-
-
-
-# while True:
-#     t = t + 1
-#     # print(joint_position)
-#     joint_position[0] = i
-#     joint_position[1] = i
-#     joint_position[2] = i
-#     joint_position[17] = i
-#     joint_position[14] = i
-#     robot.send_joint_position(joint_position)
-#     i = i + n
-
-#     if i > 3.14:
-#         i = -3.14
-    
-#     if t >= 2000:
-#         break
-
-robot.shutdown_all()
-
-
-
-
-######################### here are iwbrbdl codes
-import numpy as np
-import math
-
-def calcModalParameters(Q, mass, complexModeshapes = False):
-        """Calculates and returns the modal parameters (ef, ms, dr) for a given 18D pose
-        Args:
-            Q ((18,)): 18D pose
-
-        Returns:
-            [18x1 array, 18x18 array, 18x1 array]: Modal parameters eigenfrequencies, mode shapes, damping ratios
-        """
-        # Calc eigenfrequencies f using damped structure analysis
-        M = mass
-
-        # Setup of eigenvalue problem
-        A = np.block(
-            [
+############### calculation of eigenfrequency #################
+A = np.block([
                 [np.zeros((18, 18)), np.eye((18))],
-                [-np.linalg.inv(M).dot(self._K), -np.linalg.inv(M).dot(self._C)],
-            ]
-        )
+                [-np.linalg.inv(mass).dot(K), -np.linalg.inv(M).dot(C)],
+            ])
 
-        # Solve eigenvalue problems
-        if complexModeshapes:
-            omega, ms = np.linalg.eig(A)
-            ms = ms[::2, ::2]
-            ms = np.flipud(np.fliplr(ms))
-        else:
-            omega, _ = np.linalg.eig(A)
-            _ , ms = scipy.linalg.eigh(self._K, M)
+omega, _ = np.linalg.eig(A)
+omega = omega[::2]
+fr = np.sqrt((omega * omega.conjugate()).real)
+fr = fr/2/math.pi
+fr = np.flip(fr, 0)
 
-    	# Calc mode shapes (i.e. Residues)
-        modMs = ms.transpose() @ M @ ms
-        for i in range(18):
-            ms[:, i] = ms[:, i] / np.sqrt(modMs[i, i])
+# sort the result by value for the comparison in the next step
+fr.sort()
+frequenz.sort() 
 
-        # Calc eigenfrequencies and damping ratios
-        omega = omega[::2]
-        fr = np.sqrt((omega * omega.conjugate()).real)
-        dr = -omega.real / fr
+diff_fr = fr-frequenz
+print("the error of fr :", np.mean(np.abs(diff_fr)/frequenz))
 
-        idx = fr.argsort()
-        fr = fr[idx]/2/math.pi
-        dr = dr[idx]
-        if complexModeshapes:
-            ms = ms[:,idx]
+diff_M = mass-M
+print("the error of M :", np.mean(np.abs(diff_M)/M))
 
-        log.info("... modal parameters calculated.")
+diff_J = J1-jacobian
+print("the error of J :", np.mean(np.abs(diff_J)))
+#############################################################
 
-        return fr, ms, dr
+'''call this function for a clean quit'''
+robot.shutdown_all()

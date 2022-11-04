@@ -1,22 +1,35 @@
+'''
+    The module to set up the running environment.
+'''
+
 import os
 import sys
 
-# source from the python script: failed
-# alternative: add the source command to the 
+'''
+    Didn't manage to source the ros environment from python script.
+    Used the following lines to run from terminal in a subprocess instead.
+'''
 # os.system("cd")
 # os.system(". /opt/ros/noetic/local_setup.bash")
 
+
 # TODO: need to set the pypath to enable find_pkg
+
+# append necessary directory
 sys.path.append("/usr/lib/python3/dist-packages")
 sys.path.append("/opt/ros/noetic/lib/python3/dist-packages")
 sys.path.append("/usr/local/lib/python3.8/dist-packages")
-# here hardcoding the path of iwbrdbl
+
+#a hardcode directory appending for iwbrbdl
 sys.path.append("/home/blackbird/iwbrbdl")
 
-# hardcoding
+# hardcode directory for pykdl_utils (important!!!!!)
 sys.path.append("/usr/local/lib/python3.8/dist-packages/pykdl_utils")
 sys.path.append("")
 
+'''
+    functions for checking
+'''
 def get_package_path():
     return os.path.dirname(__file__) 
 

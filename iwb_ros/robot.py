@@ -1,27 +1,27 @@
 #!/usr/bin/env python
-
+'''
+    This is the main python module for robot initialization
+'''
 # the python module for robot initialization
 
-print('import iwb_ros.robot: start.')
+print('import iwb_ros.robot: start...')
 
-# run setting
-from signal import signal
+# set the operating environment
 import iwb_ros.setting
-# import multithread method
 
 # import builtin pkg
 import os
-import signal
 
 # import ros relevant
 import iwb_ros
 import rosnode
 import rospy
-# old ros import method
+
+# # this is the import method from old version ros
 # import roslib
 # roslib.load_manifest("pykdl_utils")
 
-# import the pkg
+# import the iwb_ros pkg
 import iwb_ros.robot_base
 import iwb_ros.visualization
 import iwb_ros.fake_controller
@@ -31,8 +31,9 @@ import iwb_ros.robot_dynamic
 import threading
 import subprocess
 import time
+import signal
 
-# test, import motionplanning later
+# motionplanning module, not done yet
 # import iwb_ros.motionplanning
 
 
@@ -42,6 +43,8 @@ ROS_WORKSPACE = '~/sa_ws'
 PYTHON_PKG_DIR = '~/my_pkg'
 SCRIPT_DIR = iwb_ros.__path__[0] + '/script'
 print("SCRIPT_DIR = ", SCRIPT_DIR)
+
+# script list used to launch the coresponding ros function from bash script
 SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "visualization": './robot_visualization_launch.sh',
                 "fake_controller":'./fake_controller.sh',
@@ -51,16 +54,20 @@ SCRIPT_LIST = {"ros_setup": './ros_setup.sh',
                 "motion_visualization": './moveit_script.sh',
                 "motion_planner": './moveit_planner.sh'
                 }
+# process handle for multi-thread management 
 PROCESS_HANDLE = {}
+# whether use the bash script or use python code to launch the corresponding node
 USE_SCRIPT = {"fake_controller": True,
                 "motion_controller": True,}
 
-# for those nodes who may not launch from launch file, a register must be done in main thread
+''' important:
+    for those nodes who may not get launched from launch file,
+    a register must be done in main thread in adcance!!! 
+'''
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
 
 # FAKE_CONTROLLER_USE_EXAMPLE = True
-
 BASE_LINK = "base_link"
 END_LINK = "link_6_x"
 
