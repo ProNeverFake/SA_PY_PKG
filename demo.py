@@ -12,7 +12,7 @@ import numpy as np
 # sys.path.append("~/my_pkg")
 # import subprocess
 '''for error evaluation'''
-import scipy.linalg as LA
+# import scipy.linalg as LA
 import math
 '''to import reference value in matlab format'''
 from mat4py import loadmat
@@ -191,9 +191,9 @@ for x in position_list:
 ###############################################################
 
 ##################### mass comparison #########################
-diff = M-mass
-print("the difference in mass matrix:" , diff)
-print("2-norm error evaluation:", LA.norm(diff))
+# diff = M-mass
+# print("the difference in mass matrix:" , diff)
+# print("2-norm error evaluation:", LA.norm(diff))
 ###############################################################
 
 ############### calculation of eigenfrequency #################

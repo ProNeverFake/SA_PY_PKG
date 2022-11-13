@@ -33,13 +33,13 @@
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
+## 🧐 About `<a name = "about"></a>`
 
 There are **the python package for iwb milling robot simulation**, relying on **ROS Noetic** distribution. With module "robot" and other relevant modules, the package performs **robot modeling, visualization, path planning, controlling, kinematics and dynamics calculation, robot simulation and computation**. The robot simulation and computation functionalities are realized by **IWB simulation package "iwbRBDL"**.
 
 You can  **run script "demo.py" independently**, which already applied some functionalies of robot simulation. Of course, with IWB_ROBOT class in module "robot", you can also apply those functionalies with your own program. You can check the tutorial [**Here**](#usage) and the API document [**Here**](TODO)
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Getting Started `<a name = "getting_started"></a>`
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
@@ -47,8 +47,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 These instructions will **get you a copy of the repository up** and enable it to **run with your system environment**. See [development](#development) for informations for developers.
 
-The contents you need to walk through are:<br>
+The contents you need to walk through are:`<br>`
 (*: the same as IWB ROS package.)
+
 - System Environment (*)
 - Prerequisites
   - ROS Noetic(*)
@@ -61,13 +62,14 @@ The contents you need to walk through are:<br>
 - Installation
 
 ### System Environment
+
 ***This instruction is the same as that in IWB ROS Package, you can skip it if you have already fulfilled all the requirements here.***
 
 The packages work with ROS Noetic, which is primarily targeted at:
 
 - **Ubuntu 20.04.4 LTS**
 
->Other systems are supported to varying degrees. (--- [**ROS Noetics**](http://wiki.ros.org/noetic))
+> Other systems are supported to varying degrees. (--- [**ROS Noetics**](http://wiki.ros.org/noetic))
 
 Besides, if you are running everything with a virtual machine, the following configurations are recommended:
 
@@ -77,12 +79,12 @@ Besides, if you are running everything with a virtual machine, the following con
 You can follow the [**Tutorial Here**](https://ubuntu.tutorials24x7.com/blog/how-to-install-ubuntu-20-04-lts-on-windows-using-vmware-workstation-player) to setup a virtual machine.
 
 ### Prerequisites
+
 ###### Install ROS Noetic
 
 The packages are based on ROS Noetic distribution. You may install the **desktop version** of ROS Noetic [**Here**](http://wiki.ros.org/noetic/Installation/Ubuntu). Please choose **Desktop-Full** install, which is also recommanded on that page.
 
 ~~Every time you want to run the packages with terminal, use the following command to **setup the ROS environment**.~~
-
 
 ```shell
 source /opt/ros/noetic/setup.bash
@@ -117,13 +119,13 @@ sudo apt install ros-noetic-moveit
 
 _**tips:** You could always install missing ros packages using command line like:_
 
-
 ```shell
 sudo apt update
 sudo apt install ros-ROS_DISTRO-ros_package_name
 # for example
 sudo apt install ros-noetic-ros-control
 ```
+
 The [**Moveit Tutorial**](https://ros-planning.github.io/moveit_tutorials/) can help you to understand its planning functionalities. The **Python interfaces** of Moveit are explained [Here](https://ros-planning.github.io/moveit_tutorials/doc/move_group_python_interface/move_group_python_interface_tutorial.html), which is quite helpful. And the process to **set up a robot configuration for Moveit** is shown [Here](https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html).
 
 Besides, for transplanting project to ROS 2, you may need Moveit2 instead of Moveit.
@@ -152,6 +154,7 @@ sudo apt install python3-pykdl
 ```
 
 ###### Install hrl-kdl
+
 Hrl-kdl provides us with lots of utils for KDL, which can help us to **parse the robot URDF model** directly and **extract the kinematic chain** with only several steps. Its Tutorial is [**Here**](http://wiki.ros.org/pykdl_utils), which is somewhat out of date. Our tutorial also provide you with a light introduction of it, check it [**Here**](TODO).
 
 For some reasons, it would be better to setup it from its repository clone. The following steps come from [**Here**](https://amir-yazdani.github.io/post/pykdl/), note that the version should be **"Python3 for Ubuntu 20.04 with ROS Noetic"**.
@@ -165,13 +168,16 @@ cd ~/catkin_ws/src/
 # clone the project repositroy (requires git tool)
 git clone https://github.com/amir-yazdani/hrl-kdl.git
 ```
+
 Checkout to the noetic-devel branch
+
 ```sh
 cd hrl-kdl
 git checkout noetic-devel
 ```
 
 **Install pykd_utils**
+
 ```sh
 cd pykdl_utils
 # python3 setup.py build (maybe need sudo)
@@ -179,6 +185,7 @@ sudo python3 setup.py install
 ```
 
 Install hrl_geom
+
 ```bash
 cd ~/catkin_ws/src/hrl-kdl/hrl_geom/
 python3 setup.py build
@@ -193,6 +200,7 @@ sudo apt-get install ros-noetic-urdfdom-py
 ```
 
 Build the catkin workspace
+
 ```bash
 cd ~/catkin_ws
 # install catkin build tool package
@@ -201,11 +209,14 @@ sudo apt-get install python3-catkin-tools
 catkin build
 ```
 
-Now the hrl-kdl has been succeessfully installed. 
+Now the hrl-kdl has been succeessfully installed.
 
 ###### iwbRBDL
+
 TODO
+
 ###### Others
+
 TODO
 
 ### Installing
@@ -219,18 +230,21 @@ cd
 mkdir -p my_pkg
 cd my_pkg
 ```
+
 Then run git command to **clone the packages into your new directory** (You may need permission for that, e.g. ask the owner to add you as a maintainer.):
 
 ```sh
 # Do not ignore the point "." at last!
 git clone https://gitlab.lrz.de/00000000014A6C01/sa_py_pkg.git .
 ```
+
 Now check the packages you cloned. If you have put the iwb_ros_package in another directory (not the "sa_ws" which the tutorial suggests), you need to set your custom directory before installation. Open `/iwb_ros/script/iwb_ros_setting.sh` and change the following content tnto yours.
 
 ```sh
 # change this to your folder, no space on the left & right side of "="
 path=PATH_OF_YOUR_FOLDER
 ```
+
 The directory where you place the iwb_ros packages should be `PATH_OF_YOUR_FOLDER/src`
 
 After this, now you can **install the package** using:
@@ -261,6 +275,7 @@ The output should be similar like:
 >>> iwb_ros.setting.bash_strout("package_path")
 /usr/local/lib/python3.8/dist-packages/iwb_ros
 ```
+
 which means your installation succeeds so far. You can **use ctrl+d** to quit the interaction programming of python3.
 
 Since our package needs to **run bash script to make use of the launch file of ROS packages**, you need to **change those scripts as executable**. In terminal the command for that should be "chmod +x FILENAME", but here you can run a script to achieve it. Open a new terminal and run:
@@ -273,50 +288,58 @@ sudo bash system_permission.sh
 
 Check the outputs of the terminal, which should always start with "/usr/local/lib/python3.8/dist-packages/iwb_ros/script/...". If they start with your current directory, open a new terminal and try to run bash command with absolute path using sudo.
 
-
 Run it without error, then the package is ready for using.
 
-## 🔧 Running the tests <a name = "tests"></a>
+## 🔧 Running the tests `<a name = "tests"></a>`
 
-You can run demo.py for checking. Note that you need to **move it into a new directory** (differet from our project repository) to avoid importing the package in our repository.
+You can run demo.py for checking. Note that since the documents needed are in /my_pkg, you should always run it from this directory. Because of the use of multi-thread functions, you should run it from IDEs, for which vscode is recommended. 
 
-You can either use python terminal command to run it, like:
+Install vscode by running:
+
+```sh
+sudo snap install --classic code
+```
+
+Then open the directory /my_pkg in vscode. You also need to install the python extension for running the test.
+
+
+You can also use python terminal command to run it, like:
 
 ```sh
 cd path/to/it
 python3 demo.py
 ```
 
-Or you can also run it with IDE like vscode for bebug.
+In which the main thread is blocked by the visualization because of the feature of the terminal in linux.
 
-## 🎈 Usage <a name="usage"></a>
+## 🎈 Usage `<a name="usage"></a>`
 
 TODO
 
-## 🚀 Development <a name = "development"></a>
+## 🚀 Development `<a name = "development"></a>`
 
 The tree sturcture of the package is shown as follow:
 
 TODO: tree structure
 
+TODO API
 
-TODO API 
-
-## ⛏️ Built Using <a name = "built_using"></a>
+## ⛏️ Built Using `<a name = "built_using"></a>`
 
 - [ROS Noeitcs](https://www.mongodb.com/) - Robot operation system API
 - [Moveit](https://moveit.ros.org/) - Motion planning tool
 - [Pykdl](http://docs.ros.org/en/diamondback/api/kdl/html/python/) - Robot kinematics
-- [hrl-kdl](https://github.com/gt-ros-pkg/hrl-kdl/tree/125e8746814804b69ae1cd919276304da10e5d3c/pykdl_utils/src/pykdl_utils) - User interfaces of Pykdl 
+- [hrl-kdl](https://github.com/gt-ros-pkg/hrl-kdl/tree/125e8746814804b69ae1cd919276304da10e5d3c/pykdl_utils/src/pykdl_utils) - User interfaces of Pykdl
 - [iwbRBDL](https://gitlab.lrz.de/RoboticMilling/iwbrbdl) - IWB robot computation package
 
-## ✍️ Authors <a name = "authors"></a>
+## ✍️ Authors `<a name = "authors"></a>`
 
 - [@BBlab](https://github.com/kylelobo) - Student in mechanical engineering
 - And ... more contributers in the future.
+
 <!-- See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project. -->
 
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+## 🎉 Acknowledgements `<a name = "acknowledgement"></a>`
 
 - TODO: citing and inspiration mabe
 - Thanks for your contribution to the project!

@@ -320,7 +320,10 @@ class IWB_Robot:
             print("Ros shutdown: ok.")
         except:
             print("!!!Fatal: shutdown roscore: Failed.!!!")
-
+            
+        for key in self._process_handle:
+            pro = self._process_handle[key]
+            os.killpg(os.getpgid(pro.pid), signal.SIGTERM)
 
 
 
