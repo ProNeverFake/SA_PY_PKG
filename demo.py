@@ -146,7 +146,7 @@ position_list.append(joint_position[:]),
 
 
 
-####### main work process
+####### main work process #########
 for x in position_list:
 
     # set robot configuration
@@ -169,9 +169,9 @@ for x in position_list:
     print(jacobian)
     print("##########################################")
 
-################################################################################
+#########################################################################
 
-'''another old code, the only different is that the model file
+'''another old code block, the only different is that the model file
  modified by moveit! is applied here instead of the original one, 
  which may allow further development in path planning.'''
 #################################### test code ##########################
@@ -216,11 +216,29 @@ diff_fr = fr-frequenz
 print("the error of fr :", np.mean(np.abs(diff_fr)/frequenz))
 
 diff_M = mass-M
+absM = np.abs(diff_M)
 print("the error of M :", np.mean(np.abs(diff_M)/M))
 
 diff_J = J1-jacobian
 print("the error of J :", np.mean(np.abs(diff_J)))
+
+# export the error matrix as a matlab file
+export_dic = {'diff_fr':diff_fr,
+             'diff_M': diff_M, 
+             'diff_J':diff_J, 
+             'perc_diff_fr':np.abs(diff_fr)/frequenz,
+             'perc_diff_M':np.abs(diff_M)/M,
+             'old_J':J,
+             'old_m':M,
+             'mass':mass
+             }
+import scipy.io
+scipy.io.savemat('error.mat', export_dic)
+
+
 #############################################################
 
-'''call this function for a clean quit'''
+'''
+call this function for a clean process quit
+'''
 robot.shutdown_all()

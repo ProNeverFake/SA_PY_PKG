@@ -42,7 +42,12 @@ from colorama import Fore
 import sys
 import traceback
 
-# print Exception info in terminal
+'''
+   print the exception info
+
+   arg:
+        e: error obj
+'''
 def exception_track(e):
     print(Fore.RED)
     print('##################### Exception #########################')
@@ -72,6 +77,7 @@ class Error(Exception):
     # basic class for exceptions in the package
     pass
 
+# ros off line exception
 class RosIsOffline(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
@@ -89,6 +95,7 @@ class RosIsOffline(Error):
     def __str__(self):
         return self.description
 
+# robot object not detected. exception
 class RobotNotFound(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
@@ -106,6 +113,7 @@ class RobotNotFound(Error):
     def __str__(self):
         return self.description
 
+# node is not detected. exception
 class NodeIsOffline(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
@@ -125,6 +133,8 @@ class NodeIsOffline(Error):
     def __str__(self):
         return self.description
 
+# cannot run the script. exception
+# reason can be the permission settings of linux. see the coresponding part in the readme file.
 class ScriptPermissionDenied(Error):
     # Exception raised when call ROS with Ros master offline
     description = ""
@@ -143,7 +153,7 @@ class ScriptPermissionDenied(Error):
         return self.description
 
 
-
+# test
 def main():
     try:
         raise RosIsOffline("test_module", "test_function")

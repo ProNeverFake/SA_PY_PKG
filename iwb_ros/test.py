@@ -1,3 +1,6 @@
+'''
+   only a module for function test. the content is not valid.
+'''
 #######################test code only#######################
 import rosnode
 import rospy

@@ -1,15 +1,22 @@
 #!/usr/bin/env python
+'''
+    This is the module to launch a fake controller node from python script.
+    This module is not in use currently, and the fake controller node is launched
+    from the script.
+    Check the macros in robot.py for the corresponding settings. 
+'''
 
 print('import iwb_ros.control_fake: start.')
 
-# this module is designed to "control" the robot state/pose
-# but only with simple node and topic, not the control pkg (ros_controller)
-# the robot arm should be in position immediately (that's why it's fake controller.)
+'''
+    this module is designed to "control" the robot state/pose
+    but only with simple node and topic, not the control pkg (ros_controller)
+    the robot arm should be in position immediately (that's why it's fake controller.)
 
-# also import flag
-# TODO: vielleicht soll man hier Attribute in obj IWB_Robot lesen.
+    another possibility is to use the provided methods from ros, see http://wiki.ros.org/ros_control, position_controller
+'''
 
-# the python pkg for ros functionalities
+# import the python pkg for ros functions
 import iwb_ros.robot_base
 import rospy
 import rosnode
@@ -18,15 +25,18 @@ import rosnode
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Header
 
-# Attention: node initialization must be in the main thread.
-################# initialize the node when the module is imported
+'''
+    Attention: node initialization must be in the main thread.
+    check the robot.py for details
+'''
+
+# # initialize the node when the module is imported
 # rospy.init_node('iwb_fake_controller')
 
-
-
-def initialize_fake_controller():
-    
-    # initialize ros parameter for fake controller.
+'''
+    initialize ros parameter for the fake controller.
+'''
+def initialize_fake_controller():    
     rospy.set_param('fake_controller/joint_name', 
         ['joint_1_x', 'joint_1_y', 'joint_1_z', 'joint_2_x', 'joint_2_y', 'joint_2_z',
         'joint_3_x', 'joint_3_y', 'joint_3_z', 'joint_4_x', 'joint_4_y', 'joint_4_z',
@@ -34,13 +44,16 @@ def initialize_fake_controller():
     rospy.set_param('fake_controller/joint_position', [0]*18)
 
 
+'''
+    the function to start the node
 
-# the function to publish the msg
+    arg:
+        use_example: publish the example msg
+'''
 def start_fake_controller(use_example = False):
     print("info: start the fake controller.")
-    # # run initialize function
+    # run initialize function
     initialize_fake_controller()
-    # 
     pub = rospy.Publisher('iwb_joint_state', JointState, queue_size=10)
 
     # rospy.init_node('iwb_fake_controller')
@@ -61,13 +74,17 @@ def start_fake_controller(use_example = False):
         # publish the msg to the topic
         pub.publish(joint_msg)
 
-
         # "ros.spin", sleep according to the rospy.Rate (10hz)
         rate.sleep()
 
+'''
+    set the parameter in the parameter server according to the arg
 
+    arg:
+        joint_position: the joint angles set by the user
+'''
 def set_fake_controller(joint_position):
-    # check dim
+    # check the dimension
     if len(joint_position) != 18:
         print("!!Error in control_fake.set_fake_controller: dimension not correct.!!")
     
@@ -79,7 +96,11 @@ def set_fake_controller(joint_position):
     else:
         raise iwb_ros.robot_base.NodeNotOnline("fake_controller", "set_fake_controller", "iwb_fake_controller")
 
-# run a simple example for test, but will block the main process
+'''
+   run a simple example for test.
+   This can block the main thread.
+'''
+
 def run_test_example():
     joint_position = [0]*18
     i = 0
@@ -104,7 +125,9 @@ def run_test_example():
         if t >= 2000:
             break
 
-    
+'''
+   terminate the fake controller node, delete all the parameters used for the node.
+'''
 def kill_fake_controller():
     # delete the parameters
     if rospy.has_param('fake_controller/joint_name'):
@@ -163,6 +186,6 @@ def kill_fake_controller():
 
 #         # "ros.spin", sleep according to the rospy.Rate (10hz)
 #         rate.sleep()
-
+######################################################################
 
 print('import iwb_ros.control_fake: ok.')

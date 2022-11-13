@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+'''
+    visualization module.
+    run the script to visualize the robot.
+'''
 
 print('import iwb_ros.visualization: start.')
 # Ref: http://wiki.ros.org/roslaunch/API%20Usage
@@ -16,8 +20,14 @@ import rosnode
 # rospy.init_node('rviz_mapping', anonymous=True)
 
 
+'''
+    visualize the robot using the instantiated robot object.
 
+    arg:
+        robot: the robot object instantiated in the main thread.
+'''
 def visualize(robot):
+    # use the script-launch method
     try:
         robot.script_launch("visualization")
         print("visualization: ok")
@@ -27,7 +37,7 @@ def visualize(robot):
     rospy.sleep(5)
     
 
-    ################################## raw code
+    ############ raw code for visualization launched from python ###########################
     # cwd = os.getcwd()
     # print(SCRIPT_DIR)
     # os.chdir(SCRIPT_DIR)
@@ -62,7 +72,7 @@ def visualize(robot):
     # print(command)
     # print(os.system(command))
 
-    ######################################## following: roslaunch pymodule attempt
+    ##################### the attemption to use roslaunch for visualization launch. ############
 
     # # following the incorrect example code.
     # # launch obj that contains the dir info

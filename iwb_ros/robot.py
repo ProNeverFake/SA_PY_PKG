@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 '''
-    This is the main python module for robot initialization
+    This is the main python module for robot object initialization
 '''
-# the python module for robot initialization
 
+# the python module for robot initialization
 print('import iwb_ros.robot: start...')
 
 # set the operating environment
@@ -17,7 +17,7 @@ import iwb_ros
 import rosnode
 import rospy
 
-# # this is the import method from old version ros
+# # this is the import method from old-version ros
 # import roslib
 # roslib.load_manifest("pykdl_utils")
 
@@ -27,15 +27,14 @@ import iwb_ros.visualization
 import iwb_ros.fake_controller
 import iwb_ros.robot_dynamic
 
-# import multithread solution
+# import the multithread solution
 import threading
 import subprocess
 import time
 import signal
 
-# motionplanning module, not done yet
+# motionplanning module, unfinished, for further extensions
 # import iwb_ros.motionplanning
-
 
 ################################## MACRO ################################
 # workspace directory
@@ -62,7 +61,7 @@ USE_SCRIPT = {"fake_controller": True,
 
 ''' important:
     for those nodes who may not get launched from launch file,
-    a register must be done in main thread in adcance!!! 
+    a registration must be done in the main thread in adcance!!! 
 '''
 ROS_NODE_NAME ={"fake_controller": 'iwb_fake_controller',
                 }
@@ -184,7 +183,7 @@ class IWB_Robot:
         #     rospy.init_node(node_name)
         ########################################################
 
-        # set the python_pkg_dir, which may be in need within rosnode
+        # set the python_pkg_dir, which may be needed within rosnode
         rospy.set_param('python_pkg_dir', self.python_pkg_dir)
 
         # read robot param
@@ -267,7 +266,9 @@ class IWB_Robot:
             self.iwb_kdl.shutdown()
 
     def simulator(self):
-        # FUTURE: use simulator.
+        # TODO: This is prepared for gazebo or other simulators
+        # with physical engines to substitute the visualization
+        # in riviz and to provide simulation functions.
         pass
     
     def visualization(self):
@@ -282,6 +283,7 @@ class IWB_Robot:
         except:
             print("!!!Fatal: launch visualization: failed.!!!")
 
+        # pause the process for a complete launch
         rospy.sleep(5)
         # iwb_ros.visualization.visualize(self)
 
@@ -312,22 +314,26 @@ class IWB_Robot:
             print("!Warning: shutdown_all: cannot kill the nodes.!")
         pass
         
+        # shutdown the ros service
         try: 
             self.script_launch("ros_shutdown")
             print("Ros shutdown: ok.")
         except:
             print("!!!Fatal: shutdown roscore: Failed.!!!")
 
+
+
+
     # run a provided script
     def script_launch(self, launch_name):
         '''
         general method to run a corresponding script, which includes the bash commands to
         source the ros installation and execute corresponding launch file.
-        the handle of the launched process should be saved into dictionary
+        the handle of the launched process should be saved into the dictionary
 
         args: 
             launch_name: the name of the functionality to be launched, according to the 
-            dictionary robot.script_list
+            dictionary: robot.script_list
 
         '''
 

@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+'''
+   reserved module for montionplanning integrated with moveit.
+   unfinished. If need to extend this module, use the urdf file
+   produced by running the moveit setup. see http://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html
+'''
+
 print('import iwb_ros.motionplanning: start.')
 
 # the python pkg for ros functionalities
@@ -14,6 +21,8 @@ import moveit_msgs.msg
 import geometry_msgs.msg
 from math import pi
 
+# code according to the tutorial of moveit.
+# see https://ros-planning.github.io/moveit_tutorials/doc/move_group_python_interface/move_group_python_interface_tutorial.html
 
 # joint goal initialize in the namespace
 joint_goal = [0]*18
@@ -60,7 +69,7 @@ def get_group_names():
 
 # get the whole state of the robot
 def get_current_state():
-    # TODO: get the current joint state using moveit functions
+    # TODO: get the current joint states using moveit functions
     return group.get_current_state()
 
 # get the joint states
@@ -75,7 +84,7 @@ def set_joint_state():
     # TODO: set the joint goal state with the input param
     pass
 
-# plan
+# plan the path
 def plan():
     print(group.go(joint_goal, wait=True))
     # Calling ``stop()`` ensures that there is no residual movement
@@ -83,7 +92,7 @@ def plan():
     # TODO: set the plan with received param
     
 def print():
-    # print the plan, maybe later
+    # print the planned path
     pass
 
 # the function to publish the msg
