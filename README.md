@@ -292,7 +292,7 @@ Run it without error, then the package is ready for using.
 
 ## 🔧 Running the tests `<a name = "tests"></a>`
 
-You can run demo.py for checking. Note that since the documents needed are in /my_pkg, you should always run it from this directory. Because of the use of multi-thread functions, you should run it from IDEs, for which vscode is recommended. 
+You can run demo.py for checking. Note that since the documents needed are in /my_pkg, you should always run it from this directory. Because of the use of multi-thread functions, you should run it from IDEs, for which vscode is recommended.
 
 Install vscode by running:
 
@@ -300,8 +300,9 @@ Install vscode by running:
 sudo snap install --classic code
 ```
 
-Then open the directory /my_pkg in vscode. You also need to install the python extension for running the test.
+Then open the directory /my_pkg in vscode. You also need to install the python extension for running the test. Please search the python extension in Extensions.
 
+Then you can run the test script demo.py. The robot is visualized at first. Then the control node is launched, and the robot is set to the configuration for test. After that, the Jacobian matrix, mass matrix and eigenfrequencies are calculated and printed. Finally, the process is terminated clearly.
 
 You can also use python terminal command to run it, like:
 
@@ -310,7 +311,7 @@ cd path/to/it
 python3 demo.py
 ```
 
-In which the main thread is blocked by the visualization because of the feature of the terminal in linux.
+While running it from the terminal, there are many error reports of the velocity settings in pykdl, while the functions of the model are not affected. Besides, a debug is also not possible with the termianl. Therefore, this method is not recommanded.
 
 ## 🎈 Usage `<a name="usage"></a>`
 
