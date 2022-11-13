@@ -304,14 +304,20 @@ Then open the directory /my_pkg in vscode. You also need to install the python e
 
 Then you can run the test script demo.py. The robot is visualized at first. Then the control node is launched, and the robot is set to the configuration for test. After that, the Jacobian matrix, mass matrix and eigenfrequencies are calculated and printed. Finally, the process is terminated clearly.
 
-You can also use python terminal command to run it, like:
+You can also use python terminal command to run it. Before doing that, you need to install the dependent libraries at first:
 
 ```sh
-cd path/to/it
+sudo pip3 install mat4py
+```
+
+ then run the demo.py like:
+
+```sh
+cd my_pkg/
 python3 demo.py
 ```
 
-While running it from the terminal, there are many error reports of the velocity settings in pykdl, while the functions of the model are not affected. Besides, a debug is also not possible with the termianl. Therefore, this method is not recommanded.
+While running it from the terminal, there are many error reports of the velocity settings in pykdl, while the functions of the model are not affected. Besides, the environment of the terminal is dependent on the system setup, and debug is also not possible with the termianl. Therefore, this method is not recommanded.
 
 ## 🎈 Usage `<a name="usage"></a>`
 
